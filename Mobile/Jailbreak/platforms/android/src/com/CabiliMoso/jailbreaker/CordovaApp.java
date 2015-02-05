@@ -22,7 +22,7 @@ package com.CabiliMoso.jailbreaker;
 import android.os.Bundle;
 import org.apache.cordova.*;
 
-public class Jailbreaker extends CordovaActivity 
+public class CordovaApp extends CordovaActivity
 {
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -30,8 +30,6 @@ public class Jailbreaker extends CordovaActivity
         super.onCreate(savedInstanceState);
         super.init();
         // Set by <content src="index.html" /> in config.xml
-        super.loadUrl(Config.getStartUrl());
-        //super.loadUrl("file:///android_asset/www/index.html");
+        loadUrl(launchUrl);
     }
 }
-
