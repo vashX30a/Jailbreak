@@ -1,6 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.CabiliMoso.jailbreaker" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>Jailbreaker</name>
+    <platform name="android">
+    <!-- you can use any density that exists in the Android project -->
+    <splash src="JBloadingscreenBG.png" density="port-hdpi"/>
+    <splash src="JBloadingscreenBG.png" density="port-ldpi"/>
+    <splash src="JBloadingscreenBG.png" density="port-mdpi"/>
+    <splash src="JBloadingscreenBG.png" density="port-xhdpi"/>
+	</platform>
+	
+	<preference name="SplashScreen" value="screen" />
+	<preference name="SplashScreenDelay" value="30000" />
+	<name>Jailbreaker</name>
     <icon src="icon/icon.png" />
     <description>
         A fun game about helping a prisoner escape.

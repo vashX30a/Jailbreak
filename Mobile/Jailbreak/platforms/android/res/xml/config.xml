@@ -1,6 +1,15 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.CabiliMoso.jailbreaker" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
     <preference name="loglevel" value="DEBUG" />
+    <feature name="SplashScreen">
+        <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
+    </feature>
+    <splash density="port-hdpi" src="JBloadingscreenBG.png" />
+    <splash density="port-ldpi" src="JBloadingscreenBG.png" />
+    <splash density="port-mdpi" src="JBloadingscreenBG.png" />
+    <splash density="port-xhdpi" src="JBloadingscreenBG.png" />
+    <preference name="SplashScreen" value="screen" />
+    <preference name="SplashScreenDelay" value="30000" />
     <name>Jailbreaker</name>
     <icon src="icon/icon.png" />
     <description>
