@@ -38,12 +38,6 @@ var app = {
 		//app.onHomePage();
 
         console.log('Received Event: ' + id);
-	},
-	onHomePage: function(){
-		var helpButton = document.getElementById('help');
-		helpButton.addEventListener.("click", function(){
-			alert('Yes');
-		});
 	}
 
 };
