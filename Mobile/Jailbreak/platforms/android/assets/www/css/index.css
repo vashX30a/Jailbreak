@@ -4,92 +4,262 @@
     -webkit-tap-highlight-color: rgba(0,0,0,0); /* make transparent link selection, adjust last value opacity 0 to 1.0 */
 }
 
+*, *:before, *:after {
+  box-sizing: border-box;
+}
+
 body {
     -webkit-touch-callout: none;                /* prevent callout to copy image, etc when tap to hold */
     -webkit-text-size-adjust: none;             /* prevent webkit from resizing text to fit */
     -webkit-user-select: none;                  /* prevent copy paste, to allow, change 'none' to 'text' */
     background-color:#E4E4E4;
-    background:url(../img/JBHomePageBG.png) no-repeat fixed;
-	-webkit-background-size: cover;
-    -moz-background-size: cover;
-    -o-background-size: cover;
-    background-size: cover;
     font-family:'HelveticaNeue-Light', 'HelveticaNeue', Helvetica, Arial, sans-serif;
-    font-size:12px;
-	width:100%;
+    font-size:18px;
+	  width:100%;
     height:100%;
     margin:0px;
     padding:0px;
-    text-transform:uppercase;
 }
 
-/*.event {
-    border-radius:4px;
-    -webkit-border-radius:4px;
-    color:#FFFFFF;
-    margin:0px 30px;
-    padding:2px 0px;
+ul {
+  list-style: none;
+  padding: 0;
+  margin: 0
 }
 
-
-/*.event.listening {
-	position: absolute;
-	top: 30%;
-    background-color:#333333;
-    font-size:12px;
-    display:block;
-}*/
-
-.event.received {
-    position: fixed;
-	top: 10%;
-	left: 28%;
-    display:none;
+li {
+  padding: 10px 0;
 }
 
-.menu {
-	text-align: center;
-	margin:15px 0px;
-    padding:2px 0px;
-}
-	
-
-.blink {
-    animation:fade 3000ms infinite;
-    -webkit-animation:fade 3000ms infinite;
+.wrapper {
+  width: 100%;
+  height: 100%;
+  position: absolute;
 }
 
-.menu.button {
-   border-top: 1px solid #96d1f8;
-   background: #1e394a;
-   background: -webkit-gradient(linear, left top, left bottom, from(#3db8ff), to(#1e394a));
-   background: -webkit-linear-gradient(top, #3db8ff, #1e394a);
-   background: -moz-linear-gradient(top, #3db8ff, #1e394a);
-   background: -ms-linear-gradient(top, #3db8ff, #1e394a);
-   background: -o-linear-gradient(top, #3db8ff, #1e394a);
-   padding: 10px 10px;
-   margin:25px 0px;
-   -webkit-border-radius: 10px;
-   -moz-border-radius: 10px;
-   border-radius: 10px;
-   -webkit-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   -moz-box-shadow: rgba(0,0,0,1) 0 1px 0;
-   box-shadow: rgba(0,0,0,1) 0 1px 0;
-   text-shadow: rgba(0,0,0,.4) 0 1px 0;
-   color: white;
-   font-size: 30px;
-   font-family: Helvetica, Arial, Sans-Serif;
-   text-decoration: none;
-   vertical-align: middle;
+#menu {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border: 1px solid black;
+  z-index: 2;
+  background-color: grey;
 }
+
+@media only screen and (max-device-width: 480px) {
+  #menu.main {
+    background-image: url('../img/JBHomePageBG.png') !important;
+    background-size: cover;
+  }
+
+  #menu.options {
+    background-image: url('../img/JBOptionsPageBG.png') !important;
+    background-size: cover;
+  }
+    
+  #menu.help {
+    background-image: url('../img/JBHelpPageBG.png') !important;
+    background-size: cover;
+  }
    
-.button:hover {
-   border-top-color: #3588bf;
-   background: #3588bf;
-   color: #001c2e;
 }
 
-.button:active {
-   border-top-color: #1b435e;
-   background: #1b435e;
+#progress {
+  display: none;
+  height: 12%;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#percent {
+  color: white;
+  font-weight: bold;
+  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+}
+
+#progress-bar {
+  width: 200px;
+}
+
+#main {
+  /*display: none;*/
+  overflow: auto;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+}
+
+#main h1 {
+  text-align: center;
+  color: white;
+  text-transform: uppercase;
+}
+
+#options-container {
+  display: none;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  color: white;
+}
+
+#settings {
+  margin: 40px auto;
+}
+
+#settings .opt{
+  margin: 30px auto;
+}
+
+#settings .p {
+  color: #FFFFFF;
+  text-align: center;
+  font-size: 18px;
+  text-transform: uppercase;
+}
+
+#settings .switch{
+  width: 100px;
+  margin: 10px auto;
+}
+
+#settings .slider{
+  width: 200px;
+  margin: 10px auto;
+}
+
+#help-container {
+  display: none;
+  margin: auto;
+  position: absolute;
+  top: 0; left: 0; bottom: 0; right: 0;
+  color: white;
+}
+
+.header {
+  position: center;
+  background-color: #FB1886;
+  padding: 5px;
+}
+
+.header h1{
+  font-size: 28px;
+  font-weight: bold;
+  text-transform: uppercase;
+  text-align: center;
+}
+
+#instructions {
+  background-color: transparent;
+  width: 300px;
+  /*margin-top: 100px;*/
+  margin: 10px auto;
+  padding: 10px;
+  color: #000000;
+  text-align: center;
+  font-size: 16px;
+  line-height: 30px;
+}
+
+/************************** Buttons CSS ********************************/
+.button {
+  color: white;
+  font-size: 24px;
+  font-weight: bold;
+  text-transform: uppercase;
+  /*text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;*/
+
+  display: block;
+  width: 150px;
+  margin: 0 auto;
+  height: 60px;
+  line-height: 30px;
+  border: 1px solid #AA2666;
+  background-color: #FB1886;
+  background-image: -webkit-linear-gradient(bottom, #FB1886 0%, #B30D5D 100%);
+  background-image:         linear-gradient(to bottom, #FB1886 0%, #B30D5D 100%);
+  border-radius: 5px;
+}
+
+
+
+.button:hover {
+  font-size: 28px;
+  background-color: #B30D5D;
+  background-image: -webkit-linear-gradient(bottom, #B30D5D 0%, #FB1886 100%);
+  background-image:         linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
+}
+
+/******************************************************************************/
+/******** Switch CSS *******/
+.onoffswitch {
+  position: relative; width: 100px;
+  -webkit-user-select:none; -moz-user-select:none; -ms-user-select: none;
+}
+.onoffswitch-checkbox {
+    display: none;
+}
+.onoffswitch-label {
+    display: block; overflow: hidden; cursor: pointer;
+    border: 2px solid #B30D5D; border-radius: 20px;
+}
+.onoffswitch-inner {
+    display: block; width: 200%; margin-left: -100%;
+    -moz-transition: margin 0.3s ease-in 0s; -webkit-transition: margin 0.3s ease-in 0s;
+    -o-transition: margin 0.3s ease-in 0s; transition: margin 0.3s ease-in 0s;
+}
+.onoffswitch-inner:before, .onoffswitch-inner:after {
+    display: block; float: left; width: 50%; height: 30px; padding: 0; line-height: 30px;
+    font-size: 16px; color: white; font-family: Trebuchet, Arial, sans-serif; font-weight: bold;
+    -moz-box-sizing: border-box; -webkit-box-sizing: border-box; box-sizing: border-box;
+}
+.onoffswitch-inner:before {
+    text-align: left;
+    content: "ON";
+    padding-left: 10px;
+    background-color: #B30D5D; color: #FFFFFF;
+}
+.onoffswitch-inner:after {
+    text-align: left;
+    content: "OFF";
+    padding-right: 10px;
+    background-color: #EEEEEE; color: #999999;
+    text-align: right;
+}
+.onoffswitch-switch {
+    display: block; width: 35px; margin: -2.5px;
+    background: #FFFFFF;
+    border: 2px solid #B30D5D; border-radius: 20px;
+    position: absolute; top: 0; bottom: 0; right: 66px;
+    -moz-transition: all 0.3s ease-in 0s; -webkit-transition: all 0.3s ease-in 0s;
+    -o-transition: all 0.3s ease-in 0s; transition: all 0.3s ease-in 0s; 
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-inner {
+    margin-left: 0;
+}
+.onoffswitch-checkbox:checked + .onoffswitch-label .onoffswitch-switch {
+    right: 0px; 
+}
+
+/******************* Slider CSS *******************************/
+
+input[type=range] {  
+  width: 200px;
+  margin: 0px auto;
+  -webkit-appearance: none;  
+  border-radius: 8px;  
+  height: 7px;  
+  border: 1px solid #bdc3c7;  
+  background-color: #fff;       
+}  
+
+input[type='range']::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  background-color: #ecf0f1;
+  border: 1px solid #bdc3c7;
+  width: 20px;
+  height: 20px;
+  border-radius: 10px;
+  cursor: pointer;
 }

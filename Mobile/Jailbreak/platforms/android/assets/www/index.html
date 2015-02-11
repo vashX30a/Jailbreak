@@ -23,25 +23,96 @@
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
+		<link rel="stylesheet" type="text/css" href="css/animations.css" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
         <meta name="msapplication-tap-highlight" content="no" />
         <title>Jailbreaker</title>
     </head>
-    <body>
-		<div id="deviceready" class="app">
-			<!--div class="event listening blink">Loading Game Application...</div-->
-			<div id= "home" class="event received">
-				<div class="menu button" id="play">PLAY</div>
-				<div class="menu button" id="options">OPTIONS</div>
-				<div class="menu button" id="help">HELP</div>
-			</div>
-		</div>
-		
+    <body onload="onLoad()">
+    	<div class="wrapper">
+            <div class="sound sound-off"></div>
+            <div id="menu">
+              <div id="progress">
+                <div id="percent">Downloading: <span id="p"></span></div>
+                <progress id="progress-bar" value="0"></progress>
+              </div>
+              <div id="main">
+                    <h1>JailBreaker</h1>
+                <ul>
+                  <li><input type="button" class="button play" value="Play" /></li>
+                  <li><input type="button" class="button option" value="Options" /></li>
+                  <li><input type="button" class="button help" value="Help"/></li>
+                </ul>
+              </div>
+              <div id="options-container">
+                <div class="header">
+                    <h1>Options</h1>
+                </div>
+                <div id="settings">
+                    <div class="opt">
+                        <div class="p">Music</div>
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="music-switch" checked>
+                                <label class="onoffswitch-label" for="music-switch">
+                                    <span class="onoffswitch-inner"></span>
+                                    <span class="onoffswitch-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opt">
+                        <div class="p">Sound Effects</div>
+                        <div class="switch">
+                            <div class="onoffswitch">
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sounds-switch" checked>
+                                <label class="onoffswitch-label" for="sounds-switch">
+                                    <span class="onoffswitch-inner"></span>
+                                    <span class="onoffswitch-switch"></span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="opt">
+                        <div class="p">Sensitivity</div>
+                        <div class="slider">
+                            <input type="range" min="0" max="100" value="0" step="1" onchange="rangevalue.value=value" />
+                            <!--output id="rangevalue"></output-->
+                        </div>
+                    </div>
+                </div>
+                <input type="button" class="button back" value="Back"/>
+              </div>
+              <div id="help-container">
+                <div class="header">
+                    <h1>Help</h1>
+                </div>
+                <div id="instructions">
+                    <p class=""> 
+                        Move the character to avoid the policemen on his way out through tilting your device left or right. Try not to get caught as long as you can or else it's game over!
+                    </p> 
+                </div>   
+                <input type="button" class="button back" value="Back"/>
+             
+              </div>
+            </div>
+            <!--canvas id="canvas" width="800" height="480">
+             
+            </canvas>
+            <div id="game-over">
+              
+            </div-->
+      </div>
+	
         <script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="lib/jquery.2.1.1.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
+        <script type="text/javascript" src="js/app.js"></script>
+
         <script type="text/javascript">
-			app.initialize();  
-			app.onHomePage();
+            function onLoad(){
+                app.initialize();
+            }
         </script>
     </body>
 </html>
