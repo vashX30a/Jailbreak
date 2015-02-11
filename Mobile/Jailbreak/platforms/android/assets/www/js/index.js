@@ -14,6 +14,7 @@ var app = {
 	
     receivedEvent: function(id) {
 		  navigator.splashscreen.hide();
-	  }
+    }
+
 
 };
