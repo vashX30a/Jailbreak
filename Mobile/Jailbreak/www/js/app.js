@@ -13,6 +13,33 @@ function mainMenu() {
 /**
  * Click handlers for the different menu screens
  */
+$('.play').click(function() {
+  $('#menu').hide();
+  //$('#game-over').show();
+  $('#pause').show();
+
+});
+
+$('#pause').click(function() {
+   var $this = $(this);
+  if ($this.hasClass('pause-off')) {
+    $('#container').show();
+  } 
+
+});
+
+$('.resume').click(function() {
+  $('#container').hide();
+
+});
+
+$('.quit').click(function() {
+  $('#container').hide();
+  $('#pause').hide();
+  $('#menu').show();
+});
+
+
 $('.option').click(function() {
   $('#main').hide();
   $('#options-container').show('slow');
@@ -26,10 +53,10 @@ $('.help').click(function() {
 });
 
 $('.back').click(function() {
-  $('#options-container,#help-container').hide();
+  $('#options-container, #help-container').hide();
   $('#main').show();
   $('#menu').removeClass('options help stretchRight');
 });
 
-mainMenu();
+//mainMenu();
 })(jQuery);

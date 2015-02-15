@@ -25,12 +25,18 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 		<link rel="stylesheet" type="text/css" href="css/animations.css" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
+        <script type="text/javascript" src="lib/jquery.2.1.1.min.js"></script>
         <meta name="msapplication-tap-highlight" content="no" />
         <title>Jailbreaker</title>
     </head>
     <body onload="onLoad()">
     	<div class="wrapper">
-            <div class="sound sound-off"></div>
+            <input type="button" class="button play" value="Play" />
+
+            <div id="pause">
+                <input type="button" class="button pause" value="Pause" />
+            </div>
+
             <div id="menu">
               <div id="progress">
                 <div id="percent">Downloading: <span id="p"></span></div>
@@ -96,16 +102,19 @@
              
               </div>
             </div>
-            <!--canvas id="canvas" width="800" height="480">
+            <canvas id="canvas">
              
             </canvas>
+            </div>
             <div id="game-over">
-              
-            </div-->
+                <div id="text">GAMEOVER!</div>
+                <input type="button" class="button play" value="Play" />
+            </div>
+            <div id="container">
+            </div>
       </div>
 	
         <script type="text/javascript" src="cordova.js"></script>
-		<script type="text/javascript" src="lib/jquery.2.1.1.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
 
