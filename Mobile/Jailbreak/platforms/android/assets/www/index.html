@@ -25,18 +25,12 @@
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
 		<link rel="stylesheet" type="text/css" href="css/animations.css" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
-        <script type="text/javascript" src="lib/jquery.2.1.1.min.js"></script>
         <meta name="msapplication-tap-highlight" content="no" />
         <title>Jailbreaker</title>
     </head>
     <body onload="onLoad()">
     	<div class="wrapper">
-            <input type="button" class="button play" value="Play" />
-
-            <div id="pause">
-                <input type="button" class="button pause" value="Pause" />
-            </div>
-
+            <div class="sound sound-off"></div>
             <div id="menu">
               <div id="progress">
                 <div id="percent">Downloading: <span id="p"></span></div>
@@ -94,7 +88,7 @@
                     <h1>Help</h1>
                 </div>
                 <div id="instructions">
-                    <p class=""> 
+                    <p class="ins"> 
                         Move the character to avoid the policemen on his way out through tilting your device left or right. Try not to get caught as long as you can or else it's game over!
                     </p> 
                 </div>   
@@ -102,24 +96,31 @@
              
               </div>
             </div>
-            <canvas id="canvas">
+            <canvas id="canvas" width="480" height="800">
              
             </canvas>
+            <div id="pause" class="pause-off">
             </div>
+
+             <div id="container">
+                <div class="pause-on">
+                    <h2>You have paused the game.</h2>
+                    <input type="button" class="button resume" value="Resume" /> 
+                    <input type="button" class="button quit" value="Quit" />            
+                </div>
+            </div>
+
             <div id="game-over">
-                <div id="text">GAMEOVER!</div>
-                <input type="button" class="button play" value="Play" />
-            </div>
-            <div id="container">
+                <input type="button" class="button restart" value="Restart" />            
             </div>
       </div>
 	
         <script type="text/javascript" src="cordova.js"></script>
+		<script type="text/javascript" src="lib/jquery.2.1.1.min.js"></script>
         <script type="text/javascript" src="js/index.js"></script>
         <script type="text/javascript" src="js/app.js"></script>
 
         <script type="text/javascript">
-
             function onLoad(){
                 app.initialize();
             }
