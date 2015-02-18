@@ -11,24 +11,6 @@
                         {
                             "xml": "<feature name=\"SplashScreen\"><param name=\"android-package\" value=\"org.apache.cordova.splashscreen.SplashScreen\" /></feature>",
                             "count": 1
-                        },
-                        {
-                            "xml": "<feature name=\"Compass\"><param name=\"android-package\" value=\"org.apache.cordova.deviceorientation.CompassListener\" /></feature>",
-                            "count": 1
-                        }
-                    ]
-                }
-            },
-            "AndroidManifest.xml": {
-                "parents": {
-                    "/*": [
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_COARSE_LOCATION\" />",
-                            "count": 1
-                        },
-                        {
-                            "xml": "<uses-permission android:name=\"android.permission.ACCESS_FINE_LOCATION\" />",
-                            "count": 1
                         }
                     ]
                 }
@@ -37,9 +19,6 @@
     },
     "installed_plugins": {
         "org.apache.cordova.splashscreen": {
-            "PACKAGE_NAME": "com.CabiliMoso.jailbreaker"
-        },
-        "org.apache.cordova.device-orientation": {
             "PACKAGE_NAME": "com.CabiliMoso.jailbreaker"
         }
     },
