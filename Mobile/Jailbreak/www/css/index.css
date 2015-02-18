@@ -38,7 +38,8 @@ canvas {
   left: 0;
   border: 1px solid black;
   z-index: 1;
-
+  width: 100%;
+  height: 100%;
 }
 
 .wrapper {
@@ -74,6 +75,22 @@ canvas {
    
 }
 
+#menu.main {
+  background-image: url('../img/JBHomePageBG.png') !important;
+  background-size: cover;
+}
+
+#menu.options {
+  background-image: url('../img/JBOptionsPageBG.png') !important;
+  background-size: cover;
+}
+  
+#menu.help {
+  background-image: url('../img/JBOptionsPageBG.png') !important;
+  background-size: cover;
+}
+   
+
 #progress {
   display: none;
   height: 12%;
@@ -95,7 +112,7 @@ canvas {
 #main {
   /*display: none;*/
   overflow: auto;
-  margin: auto;
+  margin: 30px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;
 }
@@ -115,17 +132,17 @@ canvas {
 }
 
 #settings {
-  margin: 40px auto;
+  margin: auto;
 }
 
 #settings .opt{
-  margin: 30px auto;
+  margin: 60px auto;
 }
 
 #settings .p {
   color: #FFFFFF;
   text-align: center;
-  font-size: 18px;
+  font-size: 20px;
   text-transform: uppercase;
 }
 
@@ -161,16 +178,25 @@ canvas {
 }
 
 #instructions {
-  background-color: transparent;
-  width: 300px;
+  background-color: rgba(255,255,255,0.3);
+  width: 50%;
   /*margin-top: 100px;*/
-  margin: 10px auto;
+  margin: 60px auto;
   padding: 10px;
-  color: #000000;
+}
+
+.ins {
+  padding: 10px;
+  color: #ffffff;
   text-align: center;
-  font-size: 16px;
+  font-size: 20px;
   line-height: 30px;
 }
+
+#instructions .back {
+  margin: 50px;
+}
+  
 
 #game-over {
   display: none;
@@ -183,8 +209,8 @@ canvas {
 #pause {
   display: none;
   position: absolute;
-  width: 100px;
-  height: 100px;
+  width: 55px;
+  height: 55px;
   margin: 10px;
   cursor: pointer;
   z-index: 1;
@@ -236,15 +262,15 @@ canvas {
 /************************** Buttons CSS ********************************/
 .button {
   color: white;
-  font-size: 24px;
+  font-size: 30px;
   font-weight: bold;
   text-transform: uppercase;
   /*text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;*/
 
   display: block;
-  width: 150px;
+  width: 180px;
   margin: 0 auto;
-  height: 60px;
+  height: 80px;
   line-height: 30px;
   border: 1px solid #AA2666;
   background-color: #FB1886;
@@ -256,7 +282,7 @@ canvas {
 
 
 .button:hover {
-  font-size: 28px;
+  font-size: 36px;
   background-color: #B30D5D;
   background-image: -webkit-linear-gradient(bottom, #B30D5D 0%, #FB1886 100%);
   background-image:         linear-gradient(to bottom, #B30D5D 0%, #FB1886 100%);
