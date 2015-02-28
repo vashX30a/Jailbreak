@@ -4,6 +4,9 @@
     <feature name="SplashScreen">
         <param name="android-package" value="org.apache.cordova.splashscreen.SplashScreen" />
     </feature>
+    <feature name="Accelerometer">
+        <param name="android-package" value="org.apache.cordova.devicemotion.AccelListener" />
+    </feature>
     <splash density="port-hdpi" src="JBloadingscreenBG.png" />
     <splash density="port-ldpi" src="JBloadingscreenBG.png" />
     <splash density="port-mdpi" src="JBloadingscreenBG.png" />
