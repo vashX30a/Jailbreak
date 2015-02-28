@@ -90,28 +90,31 @@ canvas {
   background-size: cover;
 }
    
+#dl-container {
+  width: 100%;
+  margin: 50% auto;
+}
 
-#progress {
-  display: none;
-  height: 12%;
+#progress {   
+  width: 50%;
   margin: auto;
-  position: absolute;
-  top: 0; left: 0; bottom: 0; right: 0;
 }
 
 #percent {
   color: white;
+  font-size: 14px;
   font-weight: bold;
-  text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+  text-align: center;
 }
 
 #progress-bar {
   width: 200px;
+  text-align: center;
+
 }
 
 #main {
-  /*display: none;*/
-  overflow: auto;
+  display: none;
   margin: 30px auto;
   position: absolute;
   top: 0; left: 0; bottom: 0; right: 0;

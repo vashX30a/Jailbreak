@@ -1,4 +1,146 @@
 (function ($) {
+
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
+
+var stop;
+var player, score = 0;
+var police = [], traps = [];
+var W = canvas.width;
+var H = canvas.height;
+
+   /**
+   * Asset pre-loader object. Loads all images
+   */
+var assetLoader = (function() {
+  // images dictionary
+  this.imgs        = {
+    'wallsbg'       : 'img/wallsbg.png',
+    'wallsimg'      : 'img/JBGameEWalls.png',
+    'wiresbg'       : 'img/bgwires.png',
+    'wiresimg'      : 'img/JBGameEWires.png',
+    'prisoner'      : 'img/spritecharacter2.png',
+    'police'        : 'img/spritepolice.png'
+  };
+
+  // sounds dictionary
+  this.sounds      = {
+    'bg'            : 'sounds/bg.mp3',
+    'jump'          : 'sounds/jump.mp3',
+    'gameOver'      : 'sounds/gameOver.mp3'
+  };
+
+  var assetsLoaded = 0;                                // how many assets have been loaded
+  var numImgs      = Object.keys(this.imgs).length;    // total number of image assets
+  var numSounds    = Object.keys(this.sounds).length;  // total number of sound assets
+  this.totalAssest = numImgs;                          // total number of assets
+
+  /**
+   * Ensure all assets are loaded before using them
+   * @param {number} dic  - Dictionary name ('imgs', 'sounds', 'fonts')
+   * @param {number} name - Asset name in the dictionary
+   */
+  function assetLoaded(dic, name) {
+    // don't count assets that have already loaded
+    if (this[dic][name].status !== 'loading') {
+      return;
+    }
+
+    this[dic][name].status = 'loaded';
+    assetsLoaded++;
+
+    // progress callback
+    if (typeof this.progress === 'function') {
+      this.progress(assetsLoaded, this.totalAssest);
+    }
+
+    // finished callback
+    if (assetsLoaded === this.totalAssest && typeof this.finished === 'function') {
+      this.finished();
+    }
+  }
+
+  /**
+   * Check the ready state of an Audio file.
+   * @param {object} sound - Name of the audio asset that was loaded.
+   */
+  function _checkAudioState(sound) {
+    if (this.sounds[sound].status === 'loading' && this.sounds[sound].readyState === 4) {
+      assetLoaded.call(this, 'sounds', sound);
+    }
+  }
+
+  /**
+   * Create assets, set callback for asset loading, set asset source
+   */
+  this.downloadAll = function() {
+    var _this = this;
+    var src;
+
+    // load images
+    for (var img in this.imgs) {
+      if (this.imgs.hasOwnProperty(img)) {
+        src = this.imgs[img];
+
+        // create a closure for event binding
+        (function(_this, img) {
+          _this.imgs[img] = new Image();
+          _this.imgs[img].status = 'loading';
+          _this.imgs[img].name = img;
+          _this.imgs[img].onload = function() { assetLoaded.call(_this, 'imgs', img) };
+          _this.imgs[img].src = src;
+        })(_this, img);
+      }
+    }
+
+    // load sounds
+    for (var sound in this.sounds) {
+      if (this.sounds.hasOwnProperty(sound)) {
+        src = this.sounds[sound];
+
+        // create a closure for event binding
+        (function(_this, sound) {
+          _this.sounds[sound] = new Audio();
+          _this.sounds[sound].status = 'loading';
+          _this.sounds[sound].name = sound;
+          _this.sounds[sound].addEventListener('canplay', function() {
+            _checkAudioState.call(_this, sound);
+          });
+          _this.sounds[sound].src = src;
+          _this.sounds[sound].preload = 'auto';
+          _this.sounds[sound].load();
+        })(_this, sound);
+      }
+    }
+  }
+
+  return {
+    imgs: this.imgs,
+    sounds: this.sounds,
+    totalAssest: this.totalAssest,
+    downloadAll: this.downloadAll
+  };
+})();
+
+/**
+ * Show asset loading progress
+ * @param {integer} progress - Number of assets loaded
+ * @param {integer} total - Total number of assets
+ */
+assetLoader.progress = function(progress, total) {
+  var pBar = document.getElementById('progress-bar');
+  pBar.value = progress / total;
+  document.getElementById('p').innerHTML = Math.round(pBar.value * 100) + "%";
+}
+
+/**
+ * Load the main menu
+ */
+assetLoader.finished = function() {
+  mainMenu();
+}
+
+/*************************************************************************************/
  // rAF
   window.requestAnimationFrame = function() {
     return window.requestAnimationFrame ||
@@ -10,13 +152,6 @@
       window.setTimeout(f,1e3/60);
     }
   }();
-
-  var canvas = document.querySelector('canvas');
-  var ctx = canvas.getContext('2d');
-  var stop = false;
-  var player;
-  var W = canvas.width;
-  var H = canvas.height;
 
 
 /**
@@ -142,39 +277,38 @@ Vector.prototype.minDist = function(vec) {
   return Math.sqrt(minDist);
 };
 
+/**********************************************************************************************
 /**
  * Create a parallax background
  */
 var background = (function() {
-  // Velocity Y
-  var bg_vy;
-
-  var img = new Image();
-  img.src = 'img/JBGameEWalls.png';
+  var walls = {};
+  var wires = {};
 
   /*
    * Draw the backgrounds to the screen at different speeds
    */
-  this.draw = function() {    
-    ctx.fillStyle = '#333';
-    ctx.fillRect(0, 0, 480, 400);
-    
-    ctx.drawImage(img, 0, bg_vy);
-    ctx.drawImage(img, 0, Math.abs(bg_vy)-img.height);
+  this.draw = function() {
+    ctx.drawImage(assetLoader.imgs.wallsbg, 0, 0);
 
-    if (Math.abs(bg_vy) > img.height) {
-      bg_vy = 0;
-    }
-  
-    bg_vy += 8;
+    walls.y +=  walls.speed;   
+    wires.y +=  wires.speed;   
     
+    ctx.drawImage(assetLoader.imgs.wallsimg, 0, walls.y);
+    ctx.drawImage(assetLoader.imgs.wallsimg, 0, walls.y - H);
+
+    if (walls.y - H >= 0) {
+        walls.y = 0;
+    }
+      
   };
 
   /**
    * Reset background to zero
    */
   this.reset = function()  {
-    bg_vy = 0;
+    walls.y = 0;
+    walls.speed = 4;
   }
 
   return {
@@ -182,26 +316,25 @@ var background = (function() {
     reset: this.reset
   };
 })();
+
 /**
  * The player object
  */
 var player = (function(player) {
   // add properties directly to the player imported object
-  player.width     = 120;
-  player.height    = 110;
-  player.speed     = 6;
+  player.width     = 100;
+  player.height    = 92;
+  player.speed     = 0;
 
   // jumping
   player.dy        = 0;
 
   // spritesheets
-  player.sheet     = new SpriteSheet('img/spritecharacter2.png', player.width, player.height);
+  player.sheet     = new SpriteSheet(assetLoader.imgs.prisoner, player.width, player.height);
   player.walkAnim  = new Animation(player.sheet, 8, 0, 2);
   player.anim      = player.walkAnim;
 
   Vector.call(player, 0, 0, 0, player.dy);
-
-  var jumpCounter = 0;  // how long the jump button can be pressed down
 
   /**
    * Update the player's position and animation
@@ -214,21 +347,108 @@ var player = (function(player) {
    * Draw the player at it's current position
    */
   player.draw = function() {
+    player.y -=  player.speed;   
+
     player.anim.draw(player.x, player.y);
+    if (player.y + H <= 0) {
+        player.y = 700;
+    }
   };
 
   /**
    * Reset the player's position
    */
   player.reset = function() {
-    player.x = 180;
-    player.y = 650;
+    player.x = 305;
+    player.y = 700;
   };
 
   return player;
 })(Object.create(Vector.prototype));
 
+/**
+ * Sprites are anything drawn to the screen (ground, enemies, etc.)
+ * @param {integer} x - Starting x position of the player
+ * @param {integer} y - Starting y position of the player
+ * @param {string} type - Type of sprite
+ */
+function Sprite(x, y, type) {
+  this.x      = x;
+  this.y      = y;
+  this.width  = 250;
+  this.height = 800;
+  this.type   = type;
+  Vector.call(this, x, y, 0, 0);
 
+  /**
+   * Update the Sprite's position by the player's speed
+   */
+  this.update = function() {
+    this.dy = -player.speed;
+    this.advance();
+  };
+
+  /**
+   * Draw the sprite at it's current position
+   */
+  this.draw = function() {
+    ctx.save();
+    //ctx.translate(0.5,0.5);
+    ctx.drawImage(assetLoader.imgs.police, this.x, this.y);
+    ctx.restore();
+  };
+}
+Sprite.prototype = Object.create(Vector.prototype);
+
+function updatePolice() {
+  for (var i = 0; i < police.length; i++) {
+    police[i].update();
+    police[i].draw();
+
+    if (player.minDist(police[i]) <= player.height) {
+      gameOver();
+    }
+  }
+
+  if (police[0] && police[0].x < 0) {
+    police.splice(0, 1);
+  }
+}
+
+/**
+ * Update the players position and draw
+ */
+function updatePlayer() {
+  player.update();
+  player.draw();
+
+  // game over
+  if (player.y + player.height >= canvas.height) {
+    gameOver();
+  }
+}
+
+/**
+ * Spawn new sprites off screen
+ */
+function spawnSprites() {
+  // increase score
+  score++;
+
+ 
+    // add random enemies
+    spawnPoliceSprites();
+  
+}
+
+
+/**
+ * Spawn new police sprites off screen
+ */
+function spawnPoliceSprites() {
+    police.push(new Sprite(canvas.width + 250 % player.speed, 60, police));
+}
+/*************************************************************************************/
 /**
  * Game loop
  */
@@ -239,8 +459,21 @@ function gameLoop() {
     
     ctx.clearRect(0, 0, W, H);
     background.draw();
-    player.draw();
-    player.update();
+
+     // draw the score
+    ctx.font = "20pt Calibri";
+    ctx.fillStyle = 'white';
+    ctx.fillText('SCORE: ' + score + ' m', canvas.width - 180, 40);
+
+
+    updatePlayer();
+    updatePolice();
+    //police.update();
+    //police.draw();
+
+    spawnSprites();
+
+
 
   };
 
@@ -248,8 +481,11 @@ function gameLoop() {
 
 
 function startGame() {
+  police = [];
+
   background.reset();
   player.reset();
+  //police.reset();
   gameLoop();
 
 }  
@@ -272,8 +508,8 @@ function startGame() {
     $('#pause').show();
     $('#canvas').show();
     startGame();
-
   });
+
 
   $('#pause').click(function() {
     var $this = $(this);
@@ -317,5 +553,5 @@ function startGame() {
     $('#menu').removeClass('options help stretchRight');
   });
 
-  mainMenu();
+assetLoader.downloadAll();
 })(jQuery);
