@@ -1,2 +1,13 @@
 Mobile/Jailbreak/Platforms/*
 Mobile/Jailbreak/www/img/Thumbs.db
+*.dex
+*.apk
+*.d
+*.apk
+*.ap_
+*.ap_
+*.js
+Mobile/Jailbreak/platforms/android/assets/www/cordova_plugins.js
+*.html
+*.js
+*.prop
