@@ -4,11 +4,16 @@ var canvas = document.querySelector('canvas');
 var ctx = canvas.getContext('2d');
 
 var stop;
-var player, score = 0;
-var police = [], traps = [];
+var player, score;
+var police = {width: 112, height: 95, speed: 4, sheet: new SpriteSheet('img/spritepolice.png', 112, 95)};
+var pmen = [];
 var W = canvas.width;
 var H = canvas.height;
+var gameWidth = 225;
+var gameHeight = 850;
 
+var watchID;
+var retAcceleration = {};
    /**
    * Asset pre-loader object. Loads all images
    */
@@ -17,8 +22,6 @@ var assetLoader = (function() {
   this.imgs        = {
     'wallsbg'       : 'img/wallsbg.png',
     'wallsimg'      : 'img/JBGameEWalls.png',
-    'wiresbg'       : 'img/bgwires.png',
-    'wiresimg'      : 'img/JBGameEWires.png',
     'prisoner'      : 'img/spritecharacter2.png',
     'police'        : 'img/spritepolice.png'
   };
@@ -283,7 +286,7 @@ Vector.prototype.minDist = function(vec) {
  */
 var background = (function() {
   var walls = {};
-  var wires = {};
+  //var wires = {};
 
   /*
    * Draw the backgrounds to the screen at different speeds
@@ -292,7 +295,7 @@ var background = (function() {
     ctx.drawImage(assetLoader.imgs.wallsbg, 0, 0);
 
     walls.y +=  walls.speed;   
-    wires.y +=  wires.speed;   
+    //wires.y +=  wires.speed;   
     
     ctx.drawImage(assetLoader.imgs.wallsimg, 0, walls.y);
     ctx.drawImage(assetLoader.imgs.wallsimg, 0, walls.y - H);
@@ -326,9 +329,6 @@ var player = (function(player) {
   player.height    = 92;
   player.speed     = 0;
 
-  // jumping
-  player.dy        = 0;
-
   // spritesheets
   player.sheet     = new SpriteSheet(assetLoader.imgs.prisoner, player.width, player.height);
   player.walkAnim  = new Animation(player.sheet, 8, 0, 2);
@@ -347,12 +347,17 @@ var player = (function(player) {
    * Draw the player at it's current position
    */
   player.draw = function() {
-    player.y -=  player.speed;   
+    //player.y -=  player.speed;   
+
+    if(watchID){
+      player.x += (retAcceleration.x * 10);
+      //alert(retAcceleration.x)
+    }
 
     player.anim.draw(player.x, player.y);
-    if (player.y + H <= 0) {
-        player.y = 700;
-    }
+    //if (player.y + H <= 0) {
+    //    player.y = 700;
+    //}
   };
 
   /**
@@ -366,88 +371,109 @@ var player = (function(player) {
   return player;
 })(Object.create(Vector.prototype));
 
-/**
- * Sprites are anything drawn to the screen (ground, enemies, etc.)
- * @param {integer} x - Starting x position of the player
- * @param {integer} y - Starting y position of the player
- * @param {string} type - Type of sprite
+/* The police object
  */
-function Sprite(x, y, type) {
-  this.x      = x;
-  this.y      = y;
-  this.width  = 250;
-  this.height = 800;
-  this.type   = type;
-  Vector.call(this, x, y, 0, 0);
+function PoliceMen (police) {
+  // add properties directly to the player imported object
+  this.width = police.width;
+  this.height = police.height;
+  this.speed = police.speed;
+  this.x = police.x;
+  this.y = police.y;
+
+  // spritesheets
+  this.sheet = police.sheet;     //= new SpriteSheet(assetLoader.imgs.police, police.width, police.height);
+  this.walkAnim  = new Animation(this.sheet, 12, 0, 2);
+  this.anim      = this.walkAnim;
 
   /**
-   * Update the Sprite's position by the player's speed
+   * Update the player's position and animation
    */
   this.update = function() {
-    this.dy = -player.speed;
-    this.advance();
+    this.anim.update();
   };
 
   /**
-   * Draw the sprite at it's current position
+   * Draw the player at it's current position
    */
   this.draw = function() {
-    ctx.save();
-    //ctx.translate(0.5,0.5);
-    ctx.drawImage(assetLoader.imgs.police, this.x, this.y);
-    ctx.restore();
+    this.y +=  this.speed;     
+    this.anim.draw(this.x, this.y);
   };
+
+  /*this.init = function() {
+    police.x = Math.floor((Math.random() * 305) + 1);
+    police.y = 0;
+  }*/
+
 }
-Sprite.prototype = Object.create(Vector.prototype);
 
-function updatePolice() {
-  for (var i = 0; i < police.length; i++) {
-    police[i].update();
-    police[i].draw();
+PoliceMen.prototype = Object.create(Vector.prototype)
 
-    if (player.minDist(police[i]) <= player.height) {
-      gameOver();
-    }
-  }
-
-  if (police[0] && police[0].x < 0) {
-    police.splice(0, 1);
-  }
-}
 
 /**
- * Update the players position and draw
+ * Update the player position and draw
  */
-function updatePlayer() {
+function updatePlayer() { 
   player.update();
   player.draw();
 
-  // game over
-  if (player.y + player.height >= canvas.height) {
-    gameOver();
+}
+
+/**
+ * Update the police position and draw
+ */
+function updatePolice() {
+  for (var i = 0; i < pmen.length; i++) {
+   // console.log('drawing...')
+      pmen[i].update();
+      pmen[i].draw();
+     
+    //console.log(player.x +" "+ player.width);
+    //console.log(pmen[i].x +" "+ pmen[i].width);
+    //console.log((player.y +" "+ pmen[i].y +" "+ pmen[i].height));
+
+
+
+    if(player.x < pmen[i].x){
+      console.log(1);
+      if((player.x + player.width >= pmen[i].x) && (player.y <= pmen[i].y + pmen[i].height)){
+        console.log(11);
+
+        gameOver();
+      }
+    }else if(player.x > pmen[i].x){
+      console.log(2);
+      if((player.x <= pmen[i].x + pmen[i].width) && (player.y <= pmen[i].y + (pmen[i].height - 25))){
+        console.log(21);
+
+        gameOver();
+      }
+    }else{
+      console.log(3);
+      if((player.y <= pmen[i].y + pmen[i].height)){
+        console.log(31);
+
+        gameOver();
+      }
+    }
+
+
+  }
+
+    // remove enemies that have gone off screen
+  if (pmen[0] && pmen[0].y > gameHeight) {
+    pmen.splice(0, 1);
   }
 }
 
-/**
- * Spawn new sprites off screen
- */
-function spawnSprites() {
-  // increase score
-  score++;
-
- 
-    // add random enemies
-    spawnPoliceSprites();
+function spawnPoliceSprites() {
+  if (Math.random() > 0.96 && pmen.length < 3 && (pmen.length ? H - pmen[pmen.length-1].y >= gameHeight: true))
+    pmen.push(new PoliceMen({width: 112, height: 95, speed: 4, x: Math.floor((Math.random() * 305) + 1) , y: -100, sheet: new SpriteSheet('img/spritepolice.png', 112, 95)}));
+    //console.log(pmen.length);
   
 }
 
-
-/**
- * Spawn new police sprites off screen
- */
-function spawnPoliceSprites() {
-    police.push(new Sprite(canvas.width + 250 % player.speed, 60, police));
-}
 /*************************************************************************************/
 /**
  * Game loop
@@ -465,14 +491,9 @@ function gameLoop() {
     ctx.fillStyle = 'white';
     ctx.fillText('SCORE: ' + score + ' m', canvas.width - 180, 40);
 
-
-    updatePlayer();
+    spawnPoliceSprites();
     updatePolice();
-    //police.update();
-    //police.draw();
-
-    spawnSprites();
-
+    updatePlayer();
 
 
   };
@@ -481,19 +502,45 @@ function gameLoop() {
 
 
 function startGame() {
-  police = [];
-
+  pmen = [];
+  stop = false;
+  score = 0;
   background.reset();
   player.reset();
-  //police.reset();
+  //police.init();
   gameLoop();
 
 }  
 
+/**
+ * End the game and restart
+ */
+function gameOver() {
+  stop = true;
+  //$('#score').html(score);
+  $('#go-container').show();
+}
+
   /**********************************************/
-  /**
+
+function onSuccess(acceleration) {
+   retAcceleration.x = acceleration.x;
+   retAcceleration.y = acceleration.y;
+   retAcceleration.z = acceleration.z;
+};
+
+
+function onError() {
+    alert('onError!');
+};
+/*8
    * Show the main menu after loading all assets
    */
+function gameInit(){
+  startGame();
+  var options = { frequency: 3000 };  // Update every 3 seconds
+  watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
+}
   function mainMenu() {
     $('#progress').hide();
     $('#main').show();
@@ -507,7 +554,7 @@ function startGame() {
     $('#menu').hide();
     $('#pause').show();
     $('#canvas').show();
-    startGame();
+    gameInit();
   });
 
 
@@ -534,6 +581,10 @@ function startGame() {
     $('#menu').show();
   });
 
+  $('.restart').click(function() {
+    $('#go-container').hide();
+    gameInit();
+  });
 
   $('.option').click(function() {
     $('#main').hide();

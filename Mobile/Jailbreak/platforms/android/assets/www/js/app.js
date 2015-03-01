@@ -1,12 +1,13 @@
 (function ($) {
 
-  var canvas = document.querySelector('canvas');
-  var ctx = canvas.getContext('2d');
-  var stop = false;
-  var player, score;
-  var police = [], traps = [];
-  var W = canvas.width;
-  var H = canvas.height;
+var canvas = document.querySelector('canvas');
+var ctx = canvas.getContext('2d');
+
+var stop;
+var player, score = 0;
+var police = [], traps = [];
+var W = canvas.width;
+var H = canvas.height;
 
    /**
    * Asset pre-loader object. Loads all images
@@ -323,7 +324,7 @@ var player = (function(player) {
   // add properties directly to the player imported object
   player.width     = 100;
   player.height    = 92;
-  player.speed     = 3.5;
+  player.speed     = 0;
 
   // jumping
   player.dy        = 0;
@@ -358,61 +359,12 @@ var player = (function(player) {
    * Reset the player's position
    */
   player.reset = function() {
-    player.x = 310;
+    player.x = 305;
     player.y = 700;
   };
 
   return player;
 })(Object.create(Vector.prototype));
-
-/**
- * The police object
- */
-var police = (function(police) {
-  // add properties directly to the player imported object
-  police.width     = 112;
-  police.height    = 95;
-  police.speed     = 4;
-
-  // jumping
-  police.dy        = 0;
-
-  // spritesheets
-  police.sheet     = new SpriteSheet(assetLoader.imgs.police, police.width, police.height);
-  police.walkAnim  = new Animation(police.sheet, 12, 0, 2);
-  police.anim      = police.walkAnim;
-
-  /**
-   * Update the player's position and animation
-   */
-  police.update = function() {
-    police.anim.update();
-  };
-
-  /**
-   * Draw the player at it's current position
-   */
-  police.draw = function() {
-    police.y +=  police.speed;   
-    
-    police.anim.draw(police.x, police.y);
-
-    if (police.y - H >= 0) {
-        police.y = 50;
-    }
-  };
-
-  /**
-   * Reset the player's position
-   */
-  police.reset = function() {
-    police.x = 190;
-    police.y = 0;
-  };
-
-  return police;
-})(Object.create(Vector.prototype));
-
 
 /**
  * Sprites are anything drawn to the screen (ground, enemies, etc.)
@@ -423,8 +375,8 @@ var police = (function(police) {
 function Sprite(x, y, type) {
   this.x      = x;
   this.y      = y;
-  this.width  = gameWidth;
-  this.height = gameHeight;
+  this.width  = 250;
+  this.height = 800;
   this.type   = type;
   Vector.call(this, x, y, 0, 0);
 
@@ -441,12 +393,61 @@ function Sprite(x, y, type) {
    */
   this.draw = function() {
     ctx.save();
-    ctx.translate(0.5,0.5);
-    ctx.drawImage(assetLoader.imgs[this.type], this.x, this.y);
+    //ctx.translate(0.5,0.5);
+    ctx.drawImage(assetLoader.imgs.police, this.x, this.y);
     ctx.restore();
   };
 }
 Sprite.prototype = Object.create(Vector.prototype);
+
+function updatePolice() {
+  for (var i = 0; i < police.length; i++) {
+    police[i].update();
+    police[i].draw();
+
+    if (player.minDist(police[i]) <= player.height) {
+      gameOver();
+    }
+  }
+
+  if (police[0] && police[0].x < 0) {
+    police.splice(0, 1);
+  }
+}
+
+/**
+ * Update the players position and draw
+ */
+function updatePlayer() {
+  player.update();
+  player.draw();
+
+  // game over
+  if (player.y + player.height >= canvas.height) {
+    gameOver();
+  }
+}
+
+/**
+ * Spawn new sprites off screen
+ */
+function spawnSprites() {
+  // increase score
+  score++;
+
+ 
+    // add random enemies
+    spawnPoliceSprites();
+  
+}
+
+
+/**
+ * Spawn new police sprites off screen
+ */
+function spawnPoliceSprites() {
+    police.push(new Sprite(canvas.width + 250 % player.speed, 60, police));
+}
 /*************************************************************************************/
 /**
  * Game loop
@@ -458,10 +459,21 @@ function gameLoop() {
     
     ctx.clearRect(0, 0, W, H);
     background.draw();
-    player.update();
-    player.draw();
-    police.update();
-    police.draw();
+
+     // draw the score
+    ctx.font = "20pt Calibri";
+    ctx.fillStyle = 'white';
+    ctx.fillText('SCORE: ' + score + ' m', canvas.width - 180, 40);
+
+
+    updatePlayer();
+    updatePolice();
+    //police.update();
+    //police.draw();
+
+    spawnSprites();
+
+
 
   };
 
@@ -469,9 +481,11 @@ function gameLoop() {
 
 
 function startGame() {
+  police = [];
+
   background.reset();
   player.reset();
-  police.reset();
+  //police.reset();
   gameLoop();
 
 }  
@@ -494,8 +508,8 @@ function startGame() {
     $('#pause').show();
     $('#canvas').show();
     startGame();
-
   });
+
 
   $('#pause').click(function() {
     var $this = $(this);

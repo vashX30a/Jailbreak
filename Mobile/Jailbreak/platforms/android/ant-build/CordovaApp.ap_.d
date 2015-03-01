@@ -39,7 +39,11 @@ C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\ass
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\js\app.js \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\js\index.js \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\lib\jquery.2.1.1.min.js \
+C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.device-motion \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.splashscreen \
+C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.device-motion\www \
+C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.device-motion\www\Acceleration.js \
+C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.device-motion\www\accelerometer.js \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.splashscreen\www \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\plugins\org.apache.cordova.splashscreen\www\splashscreen.js \
 C:\Users\Karen\Documents\GitHub\Jailbreak\Mobile\Jailbreak\platforms\android\assets\www\sounds\bg.mp3 \
