@@ -7,10 +7,8 @@
     <feature name="Accelerometer">
         <param name="android-package" value="org.apache.cordova.devicemotion.AccelListener" />
     </feature>
-    <splash density="port-hdpi" src="JBloadingscreenBG.png" />
-    <splash density="port-ldpi" src="JBloadingscreenBG.png" />
-    <splash density="port-mdpi" src="JBloadingscreenBG.png" />
     <splash density="port-xhdpi" src="JBloadingscreenBG.png" />
+    <plugin name="Accelerometer" value="org.apache.cordova.AccelListener" />
     <preference name="SplashScreen" value="screen" />
     <preference name="SplashScreenDelay" value="30000" />
     <preference name="Orientation" value="portrait" />

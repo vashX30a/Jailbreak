@@ -1,10 +1,16 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.CabiliMoso.jailbreaker" version="0.0.1" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
+    <plugin name="Accelerometer" value="org.apache.cordova.AccelListener" />
+
+    <feature name="Accelerometer">
+        <param name="android-package" value="org.apache.cordova.devicemotion.AccelListener" />
+    </feature>
+
     <platform name="android">
     <!-- you can use any density that exists in the Android project -->
-    <splash src="JBloadingscreenBG.png" density="port-hdpi"/>
-    <splash src="JBloadingscreenBG.png" density="port-ldpi"/>
-    <splash src="JBloadingscreenBG.png" density="port-mdpi"/>
+    <!--splash src="JBloadingscreenBG.png" density="port-hdpi"/-->
+    <!--splash src="JBloadingscreenBG.png" density="port-ldpi"/-->
+    <!--splash src="JBloadingscreenBG.png" density="port-mdpi"/-->
     <splash src="JBloadingscreenBG.png" density="port-xhdpi"/>
 	</platform>
 	

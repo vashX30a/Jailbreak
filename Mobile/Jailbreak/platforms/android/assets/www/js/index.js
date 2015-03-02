@@ -9,11 +9,12 @@ var app = {
     },
 
     onDeviceReady: function() {
-		  app.receivedEvent('deviceready');
+	   app.receivedEvent('deviceready');
+
     },
 	
     receivedEvent: function(id) {
-		  navigator.splashscreen.hide();
-	  }
+	   navigator.splashscreen.hide();
+	}
 
 };
