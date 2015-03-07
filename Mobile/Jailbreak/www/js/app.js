@@ -12,6 +12,8 @@ var W = canvas.width;
 var H = canvas.height;
 var gameWidth = 225;
 var gameHeight = 850;
+var my_media = null;
+var mediaTimer = null;
 
 var watchMove = null;
 var retAcceleration = {};
@@ -575,6 +577,7 @@ function gameOver() {
   function gameInit(){
     startGame();
     startAccel();
+    playMusic();
   }
 
   function startAccel(){
@@ -593,8 +596,66 @@ function gameOver() {
   }
   // onError: Failed to get the acceleration
   function onError() {
-     alert('onError!');
+     alert('onErrorAccel!');
   }
+
+//Background music
+function playMusic(){
+  //playAudio(assetLoader.sounds.bg);
+  playAudio("http://ngamer.speedrunwiki.com/GameThemes/Street%20Fighter%20II.mp3");
+}
+
+function playAudio(src) {
+    // Create Media object from src
+    my_media = new Media(src, onSuccessAudio, onErrorAudio);
+    // Play audio
+    my_media.play();
+    // Update my_media position every second
+    if (mediaTimer == null) {
+        mediaTimer = setInterval(function() {
+            // get my_media position
+            my_media.getCurrentPosition(
+                // success callback
+                function(position) {
+                    if (position > -1) {
+                        setAudioPosition((position) + " sec");
+                    }
+                },
+                // error callback
+                function(e) {
+                    console.log("Error getting pos=" + e);
+                    setAudioPosition("Error: " + e);
+                }
+            );
+        }, 1000);
+    } 
+}
+
+// Pause audio
+function pauseAudio() {
+    if (my_media) {
+        my_media.pause();
+    }
+}
+
+// Stop audio
+
+function stopAudio() {
+    if (my_media) {
+        my_media.stop();
+    }
+    clearInterval(mediaTimer);
+    mediaTimer = null;
+}
+
+function onSuccessAudio() {
+  console.log("playAudio():Audio Success");
+}
+
+// onError: Failed to get the audio
+function onErrorAudio() {
+  alert('audio error!');
+}
 
   function mainMenu() {
     $('#progress').hide();
@@ -614,6 +675,7 @@ function gameOver() {
 
 
   $('#pause').click(function() {
+    //pauseAudio();
     var $this = $(this);
     stop = true;
 
@@ -623,12 +685,14 @@ function gameOver() {
   });
 
   $('.resume').click(function() {
+    //playMusic();
     stop = false;
     gameLoop();
     $('#container').hide();
   });
 
   $('.quit').click(function() {
+    //stopAudio();
     $('#container').hide();
     $('#pause').hide();
     stop = false;
