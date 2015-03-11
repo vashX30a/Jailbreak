@@ -19,13 +19,13 @@ if (!window.localStorage.hiScore){
   window.localStorage.hiScore = 0;
 }
 if (!window.localStorage.music){
-  window.localStorage.music = musicSwitch;
+  window.localStorage.music = "true";
 }
 if (!window.localStorage.sfx){
-  window.localStorage.sfx = sfxSwitch;
+  window.localStorage.sfx = "true";
 }
 if (!window.localStorage.accel){
-  window.localStorage.accel = accelSlider;
+  window.localStorage.accel = 5;
 }
 
 // High Score Variables
