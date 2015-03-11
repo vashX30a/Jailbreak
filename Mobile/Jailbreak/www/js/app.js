@@ -14,13 +14,30 @@ var gameWidth = 225;
 var gameHeight = 850;
 var my_media = null;
 var mediaTimer = null;
+// localStorage pairings
+if (!window.localStorage.hiScore){
+  window.localStorage.hiScore = 0;
+}
+if (!window.localStorage.music){
+  window.localStorage.music = musicSwitch;
+}
+if (!window.localStorage.sfx){
+  window.localStorage.sfx = sfxSwitch;
+}
+if (!window.localStorage.accel){
+  window.localStorage.accel = accelSlider;
+}
+
 // High Score Variables
-var keyName = window.localStorage.key(0);
-var highScore = window.localStorage.getItem(keyName);
+var highScore = window.localStorage.hiScore;
+// Settings vars
+var musicSwitch = window.localStorage.music;
+var sfxSwitch = window.localStorage.sfx;
+var accelSlider = window.localStorage.accel;
 
 var watchMove = null;
 var retAcceleration = {};
-
+//window.localStorage.clear();
 
 
 /**
@@ -571,7 +588,9 @@ function gameOver() {
   stop = true;
   storeHighScore(score);
   stopAudio();
-  playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
+  if(sfxSwitch == "true"){
+    playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
+  }
   //$('#score').html(score);
   $('#go-container').show();
 }
@@ -582,9 +601,14 @@ function gameOver() {
      * Show the main menu after loading all assets
      */
   function gameInit(){
+    musicSwitch = document.getElementById("music-switch").checked;
+    sfxSwitch = document.getElementById("sounds-switch").checked;
+    accelSlider = document.getElementById("sensitivity").value - 5;
     startGame();
     startAccel();
-    playMusic();
+    if(musicSwitch == "true"){
+      playMusic();
+    }
   }
 
   // Accelerometer functions
@@ -596,9 +620,10 @@ function gameOver() {
 
   function onSuccess(acceleration) {
      //alert('onSuccess! ' + acceleration.x);
-     retAcceleration.x = acceleration.x;
-     retAcceleration.y = acceleration.y;
-     retAcceleration.z = acceleration.z;
+     //accelSlider = document.getElementById("sensitivity").value - 5;
+     retAcceleration.x = acceleration.x + accelSlider;
+     retAcceleration.y = acceleration.y + accelSlider;
+     retAcceleration.z = acceleration.z + accelSlider;
     //alert(retAcceleration.x + " " + retAcceleration.y + " " + retAcceleration.z);
 
   }
@@ -670,20 +695,23 @@ function playAudioNoLoop(src) {
 }
 // Pause audio
 function pauseAudio() {
+  if(musicSwitch == "true"){
     if (my_media) {
         my_media.pause();
     }
+  }
 }
 
 // Stop audio
 
 function stopAudio() {
+  if(musicSwitch == "true"){
     if (my_media) {
         my_media.stop();
     }
-
     clearInterval(mediaTimer);
     mediaTimer = null;
+  }
 }
 
 function releaseAudio(){
@@ -709,11 +737,31 @@ function storeHighScore(newScore){
   //window.localStorage.clear();
   if(highScore < score){
     highScore = score;
-    window.localStorage.setItem(keyName, highScore);
+    window.localStorage.hiScore = highScore;
   }
 }
 
+// Getting settings values
+function initOptions(){
+  if (highScore == null){
+    highScore = 0;
+  }
+  document.getElementById("music-switch").checked = musicSwitch == "true";
+  document.getElementById("sounds-switch").checked = sfxSwitch == "true";
+  document.getElementById("sensitivity").value = accelSlider;
+}
+
+function saveSettings(){
+  musicSwitch = document.getElementById("music-switch").checked;
+  sfxSwitch = document.getElementById("sounds-switch").checked;
+  accelSlider = document.getElementById("sensitivity").value;
+  window.localStorage.music = musicSwitch;
+  window.localStorage.sfx = sfxSwitch;
+  window.localStorage.accel = accelSlider;
+}
+
   function mainMenu() {
+    initOptions();
     $('#progress').hide();
     $('#main').show();
     $('#menu').addClass('main');
@@ -776,6 +824,7 @@ function storeHighScore(newScore){
   });
 
   $('.back').click(function() {
+    saveSettings();
     $('#options-container, #help-container').hide();
     $('#main').show();
     $('#menu').removeClass('options help stretchRight');

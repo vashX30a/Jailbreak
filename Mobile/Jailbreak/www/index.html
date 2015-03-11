@@ -60,7 +60,7 @@
                         <div class="p">Music</div>
                         <div class="switch">
                             <div class="onoffswitch">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="music-switch" checked>
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="music-switch" checked="true">
                                 <label class="onoffswitch-label" for="music-switch">
                                     <span class="onoffswitch-inner"></span>
                                     <span class="onoffswitch-switch"></span>
@@ -72,7 +72,7 @@
                         <div class="p">Sound Effects</div>
                         <div class="switch">
                             <div class="onoffswitch">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sounds-switch" checked>
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sounds-switch" checked="true">
                                 <label class="onoffswitch-label" for="sounds-switch">
                                     <span class="onoffswitch-inner"></span>
                                     <span class="onoffswitch-switch"></span>
@@ -83,7 +83,7 @@
                     <div class="opt">
                         <div class="p">Sensitivity</div>
                         <div class="slider">
-                            <input type="range" min="0" max="100" value="0" step="1" onchange="rangevalue.value=value" />
+                            <input id="sensitivity" type="range" min="0" max="10" value="0" step="1" onchange="rangevalue.value=value" />
                             <!--output id="rangevalue"></output-->
                         </div>
                     </div>
