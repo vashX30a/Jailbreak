@@ -588,7 +588,7 @@ function gameOver() {
   stop = true;
   storeHighScore(score);
   stopAudio();
-  if(sfxSwitch == "true"){
+  if(sfxSwitch == true){
     playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
   }
   //$('#score').html(score);
@@ -606,9 +606,7 @@ function gameOver() {
     accelSlider = document.getElementById("sensitivity").value - 5;
     startGame();
     startAccel();
-    if(musicSwitch == "true"){
-      playMusic();
-    }
+    playMusic();  
   }
 
   // Accelerometer functions
@@ -634,7 +632,9 @@ function gameOver() {
 
 //Background music
 function playMusic(){
-  playAudio("/android_asset/www/sounds/bg.mp3");
+  if(musicSwitch == true){
+    playAudio("/android_asset/www/sounds/bg.mp3");
+  }
 }
 
 function playAudio(src) {
@@ -695,7 +695,7 @@ function playAudioNoLoop(src) {
 }
 // Pause audio
 function pauseAudio() {
-  if(musicSwitch == "true"){
+  if(musicSwitch == true){
     if (my_media) {
         my_media.pause();
     }
@@ -705,7 +705,7 @@ function pauseAudio() {
 // Stop audio
 
 function stopAudio() {
-  if(musicSwitch == "true"){
+  if(musicSwitch == true){
     if (my_media) {
         my_media.stop();
     }
@@ -743,9 +743,6 @@ function storeHighScore(newScore){
 
 // Getting settings values
 function initOptions(){
-  if (highScore == null){
-    highScore = 0;
-  }
   document.getElementById("music-switch").checked = musicSwitch == "true";
   document.getElementById("sounds-switch").checked = sfxSwitch == "true";
   document.getElementById("sensitivity").value = accelSlider;
