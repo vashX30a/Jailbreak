@@ -14,6 +14,9 @@ var gameWidth = 225;
 var gameHeight = 850;
 var my_media = null;
 var mediaTimer = null;
+// High Score Variables
+var keyName = window.localStorage.key(0);
+var highScore = window.localStorage.getItem(keyName);
 
 var watchMove = null;
 var retAcceleration = {};
@@ -531,7 +534,8 @@ function gameLoop() {
     //draw the score
     ctx.font = "20pt Calibri";
     ctx.fillStyle = 'white';
-    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 180, 40);
+    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 225, 70);
+    ctx.fillText('HIGH SCORE: ' + highScore + ' m', canvas.width - 225, 40);
 
     spawnPoliceSprites();
     updatePolice();
@@ -565,6 +569,9 @@ function startGame() {
  */
 function gameOver() {
   stop = true;
+  storeHighScore(score);
+  stopAudio();
+  playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
   //$('#score').html(score);
   $('#go-container').show();
 }
@@ -580,6 +587,7 @@ function gameOver() {
     playMusic();
   }
 
+  // Accelerometer functions
   function startAccel(){
     var options = { frequency: 300 };
     watchMove = navigator.accelerometer.watchAcceleration(onSuccess, onError, options); 
@@ -601,11 +609,41 @@ function gameOver() {
 
 //Background music
 function playMusic(){
-  //playAudio(assetLoader.sounds.bg);
-  playAudio("http://ngamer.speedrunwiki.com/GameThemes/Street%20Fighter%20II.mp3");
+  playAudio("/android_asset/www/sounds/bg.mp3");
 }
 
 function playAudio(src) {
+    var loop = function(status){
+      if(status === Media.MEDIA_STOPPED){
+        my_media.play();
+      }
+    };
+    // Create Media object from src
+    my_media = new Media(src, onSuccessAudio, onErrorAudio, loop);
+    // Play audio
+    my_media.play();
+    // Update my_media position every second
+    if (mediaTimer == null) {
+        mediaTimer = setInterval(function() {
+            // get my_media position
+            my_media.getCurrentPosition(
+                // success callback
+                function(position) {
+                    if (position > -1) {
+                        setAudioPosition((position) + " sec");
+                    }
+                },
+                // error callback
+                function(e) {
+                    console.log("Error getting pos=" + e);
+                    setAudioPosition("Error: " + e);
+                }
+            );
+        }, 1000);
+    } 
+}
+
+function playAudioNoLoop(src) {
     // Create Media object from src
     my_media = new Media(src, onSuccessAudio, onErrorAudio);
     // Play audio
@@ -630,7 +668,6 @@ function playAudio(src) {
         }, 1000);
     } 
 }
-
 // Pause audio
 function pauseAudio() {
     if (my_media) {
@@ -644,8 +681,16 @@ function stopAudio() {
     if (my_media) {
         my_media.stop();
     }
+
     clearInterval(mediaTimer);
     mediaTimer = null;
+}
+
+function releaseAudio(){
+  if(my_media != null) { 
+    my_media.release(); 
+    my_media = null; 
+  }
 }
 
 function onSuccessAudio() {
@@ -655,6 +700,17 @@ function onSuccessAudio() {
 // onError: Failed to get the audio
 function onErrorAudio() {
   alert('audio error!');
+}
+
+// Storing High Score
+function storeHighScore(newScore){
+  var score = parseInt(newScore/20);
+  //alert(highScore);
+  //window.localStorage.clear();
+  if(highScore < score){
+    highScore = score;
+    window.localStorage.setItem(keyName, highScore);
+  }
 }
 
   function mainMenu() {
@@ -675,7 +731,7 @@ function onErrorAudio() {
 
 
   $('#pause').click(function() {
-    //pauseAudio();
+    pauseAudio();
     var $this = $(this);
     stop = true;
 
@@ -685,14 +741,15 @@ function onErrorAudio() {
   });
 
   $('.resume').click(function() {
-    //playMusic();
+    playMusic();
     stop = false;
     gameLoop();
     $('#container').hide();
   });
 
   $('.quit').click(function() {
-    //stopAudio();
+    stopAudio();
+    releaseAudio();
     $('#container').hide();
     $('#pause').hide();
     stop = false;
