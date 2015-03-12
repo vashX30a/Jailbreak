@@ -587,7 +587,7 @@ function startGame() {
 function gameOver() {
   stop = true;
   storeHighScore(score);
-  stopAudio();
+  pauseAudio();
   if(sfxSwitch == true){
     playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
   }
