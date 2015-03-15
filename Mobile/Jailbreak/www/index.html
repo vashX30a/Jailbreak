@@ -111,7 +111,7 @@
 
              <div id="container">
                 <div class="pause-on">
-                    <h2>You have paused the game.</h2>
+                    <h2>You have paused the game. Click Resume to continue playing.</h2>
                     <input type="button" class="button resume" value="Resume" /> 
                     <input type="button" class="button quit" value="Quit" />            
                 </div>
@@ -119,6 +119,7 @@
             <div id="go-container">
                 <div id="game-over">
                     <h2> You are caught!! Game over! </h2>
+                    <h4><span id="score"></span> <span id="highscore"></span></h4>
                     <input type="button" class="button restart" value="Restart" />
                     <input type="button" class="button quit" value="Quit" />            
                 </div>
@@ -132,29 +133,7 @@
             function onLoad(){
                 app.initialize();
             }
-            /*
-            window.addEventListener('load', function(){
-                document.addEventListener("deviceready", onEvent, false);
-            }, false);
-    
-            function onEvent(){
-                var options = { frequency: 500 };
-                watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
-                alert(navigator.accelerometer);
-            }
-
-            function onSuccess(acceleration) {
-                var element = document.getElementById('accelerometer');
-                element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-                                    'Acceleration Y: ' + acceleration.y + '<br />' +
-                                    'Acceleration Z: ' + acceleration.z + '<br />' + 
-                                    'Timestamp: '      + acceleration.timestamp + '<br />';
-            }
-
-            // onError: Failed to get the acceleration
-            function onError() {
-                alert('onError!');
-            }*/
+           
         </script>
     </body>
 </html>

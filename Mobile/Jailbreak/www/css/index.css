@@ -226,6 +226,11 @@ canvas {
   text-transform: uppercase;;
 }
 
+#game-over .button{
+  margin:20px auto;
+
+
+}
 
 #pause {
   display: none;
@@ -280,6 +285,19 @@ canvas {
 
 
 /************************** Buttons CSS ********************************/
+@media only screen and (min-device-width: 240px) {
+  p, li, input{
+        font-size: 1.3em !important;
+    }
+  h1{
+      font-size: 1.6em !important;
+  }
+  .button{
+        width: 32px;
+        height: 16px;
+  }
+}
+
 .button {
   color: white;
   font-size: 30px;

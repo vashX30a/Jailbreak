@@ -8,6 +8,9 @@ var player, score;
 var distance = {};
 var police = {};
 var pmen = [];
+var psize = 3, pdistance;
+
+
 var W = canvas.width;
 var H = canvas.height;
 var gameWidth = 225;
@@ -473,49 +476,27 @@ function updatePlayer() {
  * Update the police position and draw
  */
 function updatePolice() {
+  if(score/20 % 20 == 0 && score/20 > 30){
+    police.speed+=0.1;
+  }
   for (var i = 0; i < pmen.length; i++) {
    // console.log('drawing...')
       pmen[i].update();
       pmen[i].draw();
-     
-    //console.log(player.x +" "+ player.width);
-    //console.log(pmen[i].x +" "+ pmen[i].width);
-    //console.log((player.y +" "+ pmen[i].y +" "+ pmen[i].height));
-
+  
     distance.x = player.x - pmen[i].x;
     distance.y = player.y - pmen[i].y;
     console.log(distance);
     //alert(distance.x);
     if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 85)){
-      console.log(distance.x);
-      if(distance.y < 58 && (player.y > pmen[i].y + police.height | player.y < pmen[i].y)){
+      console.log(distance.x + " " + distance.y);
+      if(distance.y < 58 && player.y > pmen[i].y){
+      console.log(player.y + " " + pmen[i].y);
         gameOver();
       }
     }
 
-    /*
-    if(distance < 0 && distance > -50){
-      console.log(1);
-      if((player.x + player.width >= pmen[i].x + 5)  && (player.y + 50<= pmen[i].y + pmen[i].height)){
-        //console.log(11);
-        gameOver();
-      }
-    }else if(distance > 0 && distance > 50){
-      console.log(2);
-      if((player.x <= pmen[i].x + pmen[i].width -10) && (player.y + 50 <= pmen[i].y + (pmen[i].height))){
-        //console.log(21);
-        gameOver();
-      }
-    }else{
-      console.log(3);
-      if((player.y <= pmen[i].y + pmen[i].height)){
-       // console.log(31);
-        gameOver();
-      }
-    }*/
-
-
-
+    
   }
 
     // remove enemies that have gone off screen
@@ -524,17 +505,25 @@ function updatePolice() {
   }
 }
 
+
 function spawnPoliceSprites() {
   score++;
   var valX = rand(80,305);
   police.x = valX;
-
-  if (score > 10 && Math.random() < 0.96 && pmen.length < 3 && (pmen.length ? H - pmen[pmen.length-1].y >= gameHeight && pmen[pmen.length-1].y > police.height + 100: true))
+  if(score/20 > 50 && score/20 % 50 == 0){
+    if(psize >= 5){
+      psize = 3;
+    }else{
+      psize+=1;
+    }
+    pdistance -= 10;
+  }
+  console.log(police.speed);
+  if (score > 10 && Math.random() < 0.96 && pmen.length < psize && (pmen.length ? H - pmen[pmen.length-1].y >= score/20 && police.speed > 3.5 && pmen[pmen.length-1].y > pdistance: true))
     pmen.push(new PoliceMen(police));
     //console.log(pmen.length);
   
 }
-
 /*************************************************************************************/
 /**
  * Game loop
@@ -571,6 +560,7 @@ function startGame() {
   police.speed = 3;
   police.y = -100;
   police.sheet = new SpriteSheet('img/spritepolice.png', 112, 95);
+  pdistance = police.height;
   stop = false;
   score = 0;
 
@@ -804,6 +794,8 @@ function quitApp(){
     stopAudio();
     releaseAudio();
     $('#container').hide();
+    $('#go-container').hide();
+
     $('#pause').hide();
     stop = false;
     $('#canvas').hide();
