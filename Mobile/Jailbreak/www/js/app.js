@@ -488,7 +488,7 @@ function updatePolice() {
     //alert(distance.x);
     if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 85)){
       console.log(distance.x);
-      if((player.x + player.width >= pmen[i].x && distance.y < 58) | (player.x <= pmen[i].x + pmen[i].width  && distance.y < 58)){
+      if(distance.y < 58 && (player.y > pmen[i].y + police.height | player.y < pmen[i].y)){
         gameOver();
       }
     }
@@ -549,10 +549,10 @@ function gameLoop() {
     background.draw();
 
     //draw the score
-    ctx.font = "20pt Calibri";
+    ctx.font = "18pt Calibri";
     ctx.fillStyle = 'white';
-    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 225, 70);
-    ctx.fillText('HIGH SCORE: ' + highScore + ' m', canvas.width - 225, 40);
+    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 250, 70);
+    ctx.fillText('HIGH SCORE: ' + highScore + ' m', canvas.width - 250, 40);
 
     spawnPoliceSprites();
     updatePolice();
@@ -757,6 +757,10 @@ function saveSettings(){
   window.localStorage.accel = accelSlider;
 }
 
+function quitApp(){
+  navigator.app.exitApp();
+}
+
   function mainMenu() {
     initOptions();
     $('#progress').hide();
@@ -774,6 +778,10 @@ function saveSettings(){
     gameInit();
   });
 
+  $('.exit').click(function() {
+    quitApp();  
+  });
+  
 
   $('#pause').click(function() {
     pauseAudio();
