@@ -477,7 +477,7 @@ function updatePlayer() {
  */
 function updatePolice() {
   if(score/20 % 20 == 0 && score/20 > 30){
-    police.speed+=0.1;
+    police.speed+=0.3;
   }
   for (var i = 0; i < pmen.length; i++) {
    // console.log('drawing...')
@@ -488,11 +488,11 @@ function updatePolice() {
     distance.y = player.y - pmen[i].y;
     console.log(distance);
     //alert(distance.x);
-    if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 85)){
-      console.log(distance.x + " " + distance.y);
-      if(distance.y < 58 && player.y > pmen[i].y){
+    if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 95)){
+      //console.log(distance.x + " " + distance.y);
+      if(distance.y > -80 && distance.y < 58 && player.y + player.height > pmen[i].y){
       console.log(player.y + " " + pmen[i].y);
-        gameOver();
+        //gameOver();
       }
     }
 
@@ -510,18 +510,19 @@ function spawnPoliceSprites() {
   score++;
   var valX = rand(80,305);
   police.x = valX;
-  if(score/20 > 50 && score/20 % 50 == 0){
+  if(score/20 > 50 && score/20 % 20 == 0){
     if(psize >= 5){
       psize = 3;
     }else{
       psize+=1;
     }
-    pdistance -= 10;
   }
-  console.log(police.speed);
-  if (score > 10 && Math.random() < 0.96 && pmen.length < psize && (pmen.length ? H - pmen[pmen.length-1].y >= score/20 && police.speed > 3.5 && pmen[pmen.length-1].y > pdistance: true))
+  police.y = rand(-80,-500);
+
+ // console.log(police.speed);
+  if(score > 10 && Math.random() < 0.96 && pmen.length < psize && (pmen.length ? H - pmen[pmen.length-1].y >= score/20 && police.speed > 3.5 && pmen[pmen.length-1].y > pdistance: true)){
     pmen.push(new PoliceMen(police));
-    //console.log(pmen.length);
+  }
   
 }
 /*************************************************************************************/
