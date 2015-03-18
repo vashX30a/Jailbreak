@@ -576,13 +576,10 @@ function startGame() {
  */
 function gameOver() {
   stop = true;
-  storeHighScore(score);
   pauseAudio();
-  if(sfxSwitch == true){
-    playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
-  }
-  //$('#score').html(score);
   $('#go-container').show();
+  storeHighScore(score);
+  //$('#score').html(score);
 }
 
   /**********************************************/
@@ -723,11 +720,18 @@ function onErrorAudio() {
 // Storing High Score
 function storeHighScore(newScore){
   var score = parseInt(newScore/20);
-  //alert(highScore);
-  //window.localStorage.clear();
   if(highScore < score){
+    $('#highscore').show();
     highScore = score;
     window.localStorage.hiScore = highScore;
+    if(sfxSwitch == true){
+    playAudioNoLoop("/android_asset/www/sounds/NewHighScore.mp3");
+    }
+  }
+  else{
+    if(sfxSwitch == true){
+      playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
+    }
   }
 }
 
@@ -791,11 +795,11 @@ function quitApp(){
   });
 
   $('.quit').click(function() {
-    stopAudio();
+    pauseAudio();
     releaseAudio();
     $('#container').hide();
     $('#go-container').hide();
-
+    $('#highscore').hide();
     $('#pause').hide();
     stop = false;
     $('#canvas').hide();
@@ -804,6 +808,7 @@ function quitApp(){
 
   $('.restart').click(function() {
     $('#go-container').hide();
+    $('#highscore').hide();
     gameInit();
   });
 
