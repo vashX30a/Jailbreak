@@ -480,23 +480,22 @@ function updatePolice() {
     police.speed+=0.3;
   }
   for (var i = 0; i < pmen.length; i++) {
-   // console.log('drawing...')
       pmen[i].update();
       pmen[i].draw();
   
-    distance.x = player.x - pmen[i].x;
+    distance.x = (player.x+player.width/2) -(pmen[i].x+police.width/2);
     distance.y = player.y - pmen[i].y;
-    //console.log(distance);
-    //alert(distance.x);
-    if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 95)){
-      //console.log(distance.x + " " + distance.y);
-      if(distance.y > -80 && distance.y < 58 && player.y + player.height > pmen[i].y){
-      //console.log(player.y + " " + pmen[i].y);
+    if((distance.x > -95 && distance.x < 0) | (distance.x > 0&& distance.x < 90)){
+      if((distance.x > -95 && distance.x < -80) && (distance.y > -70 && distance.y < 20) && (player.y > pmen[i].y)){
+        gameOver();
+      }
+      if((distance.x < 90 && distance.x > 80) && (distance.y > -70 && distance.y < 25) && (player.y > pmen[i].y)){
+        gameOver();
+      }
+      if((distance.x < 0 && distance.x > -80) | (distance.x > 0 && distance.x < 80) && (distance.y > -75 && distance.y < 65) && ((player.y + player.height - 10) > pmen[i].y - 10)){
         gameOver();
       }
     }
-
-    
   }
 
     // remove enemies that have gone off screen
@@ -519,7 +518,6 @@ function spawnPoliceSprites() {
   }
   police.y = rand(-80,-500);
 
- // console.log(police.speed);
   if(score > 10 && Math.random() < 0.96 && pmen.length < psize && (pmen.length ? H - pmen[pmen.length-1].y >= score/20 && police.speed > 3.5 && pmen[pmen.length-1].y > pdistance: true)){
     pmen.push(new PoliceMen(police));
   }
