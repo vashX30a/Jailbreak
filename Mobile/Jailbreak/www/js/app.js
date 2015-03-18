@@ -486,13 +486,13 @@ function updatePolice() {
   
     distance.x = player.x - pmen[i].x;
     distance.y = player.y - pmen[i].y;
-    console.log(distance);
+    //console.log(distance);
     //alert(distance.x);
     if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 95)){
       //console.log(distance.x + " " + distance.y);
       if(distance.y > -80 && distance.y < 58 && player.y + player.height > pmen[i].y){
-      console.log(player.y + " " + pmen[i].y);
-        //gameOver();
+      //console.log(player.y + " " + pmen[i].y);
+        gameOver();
       }
     }
 
