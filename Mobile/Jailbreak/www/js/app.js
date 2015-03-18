@@ -678,7 +678,7 @@ function playAudioNoLoop(src) {
                 }
             );
         }, 1000);
-    } 
+    }
 }
 // Pause audio
 function pauseAudio() {
@@ -725,7 +725,7 @@ function storeHighScore(newScore){
     highScore = score;
     window.localStorage.hiScore = highScore;
     if(sfxSwitch == true){
-    playAudioNoLoop("/android_asset/www/sounds/NewHighScore.mp3");
+      playAudioNoLoop("/android_asset/www/sounds/NewHighScore.mp3");
     }
   }
   else{
@@ -760,6 +760,7 @@ function quitApp(){
     $('#progress').hide();
     $('#main').show();
     $('#menu').addClass('main');
+    $('#highscore').hide();
   }
 
   /**
@@ -773,6 +774,7 @@ function quitApp(){
   });
 
   $('.exit').click(function() {
+    releaseAudio();
     quitApp();  
   });
   
@@ -795,8 +797,6 @@ function quitApp(){
   });
 
   $('.quit').click(function() {
-    pauseAudio();
-    releaseAudio();
     $('#container').hide();
     $('#go-container').hide();
     $('#highscore').hide();
