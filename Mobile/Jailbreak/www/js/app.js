@@ -9,7 +9,7 @@ var distance = {};
 var police = {};
 var pmen = [];
 var psize = 3, pdistance;
-
+var mediaStatus;
 
 var W = canvas.width;
 var H = canvas.height;
@@ -599,7 +599,6 @@ function gameOver() {
   function startAccel(){
     var options = { frequency: 300 };
     watchMove = navigator.accelerometer.watchAcceleration(onSuccess, onError, options); 
-    //alert(watchMove); 
   }
 
   function onSuccess(acceleration) {
@@ -625,6 +624,7 @@ function playMusic(){
 
 function playAudio(src) {
     var loop = function(status){
+      mediaStatus = status;
       if(status === Media.MEDIA_STOPPED){
         my_media.play();
       }
@@ -656,7 +656,10 @@ function playAudio(src) {
 
 function playAudioNoLoop(src) {
     // Create Media object from src
-    my_media = new Media(src, onSuccessAudio, onErrorAudio);
+    var stat = function(status){
+      mediaStatus = status
+    };
+    my_media = new Media(src, onSuccessAudio, onErrorAudio, stat);
     // Play audio
     my_media.play();
     // Update my_media position every second
@@ -683,7 +686,9 @@ function playAudioNoLoop(src) {
 function pauseAudio() {
   if(musicSwitch == true){
     if (my_media) {
-        my_media.pause();
+      if(mediaStatus === Media.MEDIA_RUNNING){
+          my_media.pause();
+        }
     }
   }
 }
@@ -693,7 +698,9 @@ function pauseAudio() {
 function stopAudio() {
   if(musicSwitch == true){
     if (my_media) {
-        my_media.stop();
+        if(mediaStatus === Media.MEDIA_RUNNING){
+          my_media.stop();
+        }
     }
     clearInterval(mediaTimer);
     mediaTimer = null;
@@ -754,8 +761,17 @@ function quitApp(){
   navigator.app.exitApp();
 }
 
+function pauseOnSuspend(){
+  pauseAudio();
+  stop = true;
+  if($('#menu').is(':hidden')){
+    $('#container').show();
+  }
+}
+
   function mainMenu() {
     initOptions();
+    document.addEventListener("pause", pauseOnSuspend, false);
     $('#progress').hide();
     $('#main').show();
     $('#menu').addClass('main');
@@ -796,6 +812,7 @@ function quitApp(){
   });
 
   $('.quit').click(function() {
+    stopAudio();
     $('#container').hide();
     $('#go-container').hide();
     $('#highscore').hide();
