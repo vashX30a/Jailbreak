@@ -823,13 +823,13 @@ function pauseOnSuspend(){
   });
 
   $('.restart').click(function() {
+    stopAudio();
     $('#go-container').hide();
     $('#highscore').hide();
     gameInit();
   });
 
   $('.option').click(function() {
-    //startAccel();
     $('#main').hide();
     $('#options-container').show('slow');
     $('#menu').addClass('options stretchRight');
