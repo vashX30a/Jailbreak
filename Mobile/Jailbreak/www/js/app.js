@@ -657,7 +657,7 @@ function playAudio(src) {
 function playAudioNoLoop(src) {
     // Create Media object from src
     var stat = function(status){
-      mediaStatus = status
+      mediaStatus = status;
     };
     my_media = new Media(src, onSuccessAudio, onErrorAudio, stat);
     // Play audio

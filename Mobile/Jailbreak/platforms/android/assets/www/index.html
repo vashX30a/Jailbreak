@@ -23,7 +23,7 @@
         <meta name="format-detection" content="telephone=no" />
         <!-- WARNING: for iOS 7, remove the width=device-width and height=device-height attributes. See https://issues.apache.org/jira/browse/CB-4323 -->
         <meta name="viewport" content="user-scalable=no, initial-scale=1, maximum-scale=1, minimum-scale=1, width=device-width, height=device-height, target-densitydpi=device-dpi" />
-		<link rel="stylesheet" type="text/css" href="css/animations.css" />
+        <link rel="stylesheet" type="text/css" href="css/animations.css" />
         <link rel="stylesheet" type="text/css" href="css/index.css" />
        <!-- <script type="text/javascript" src="phonegap.js"></script> -->
         <script type="text/javascript" src="cordova.js"></script>
@@ -32,7 +32,7 @@
 
     </head>
     <body onload="onLoad()">
-    	<div class="wrapper">
+        <div class="wrapper">
             <div class="sound sound-off"></div>
             <div id="menu">
                 <div id="dl-container">
@@ -48,8 +48,8 @@
                   <li><input type="button" class="button play" value="Play" /></li>
                   <li><input type="button" class="button option" value="Options" /></li>
                   <li><input type="button" class="button help" value="Help"/></li>
+                  <li><input type="button" class="button exit" value="Exit"/></li>
                 </ul>
-                <div id="accelerometer" style="color: white; text-align:center">Waiting for accelerometer...</div>
 
               </div>
               <div id="options-container">
@@ -61,7 +61,7 @@
                         <div class="p">Music</div>
                         <div class="switch">
                             <div class="onoffswitch">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="music-switch" checked>
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="music-switch" checked="true">
                                 <label class="onoffswitch-label" for="music-switch">
                                     <span class="onoffswitch-inner"></span>
                                     <span class="onoffswitch-switch"></span>
@@ -73,7 +73,7 @@
                         <div class="p">Sound Effects</div>
                         <div class="switch">
                             <div class="onoffswitch">
-                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sounds-switch" checked>
+                                <input type="checkbox" name="onoffswitch" class="onoffswitch-checkbox" id="sounds-switch" checked="true">
                                 <label class="onoffswitch-label" for="sounds-switch">
                                     <span class="onoffswitch-inner"></span>
                                     <span class="onoffswitch-switch"></span>
@@ -82,9 +82,9 @@
                         </div>
                     </div>
                     <div class="opt">
-                        <div class="p">Sensitivity</div>
+                        <div class="p">Tilt Bias</div>
                         <div class="slider">
-                            <input type="range" min="0" max="100" value="0" step="1" onchange="rangevalue.value=value" />
+                            <input id="sensitivity" type="range" min="0" max="10" value="0" step="1" onchange="rangevalue.value=value" />
                             <!--output id="rangevalue"></output-->
                         </div>
                     </div>
@@ -111,7 +111,7 @@
 
              <div id="container">
                 <div class="pause-on">
-                    <h2>You have paused the game.</h2>
+                    <h2>You have paused the game. Click Resume to continue playing.</h2>
                     <input type="button" class="button resume" value="Resume" /> 
                     <input type="button" class="button quit" value="Quit" />            
                 </div>
@@ -119,7 +119,9 @@
             <div id="go-container">
                 <div id="game-over">
                     <h2> You are caught!! Game over! </h2>
-                    <input type="button" class="button restart" value="Restart" />            
+                    <h4><span id="score"></span> <span id="highscore">Congratulations!! New High Score!</span></h4>
+                    <input type="button" class="button restart" value="Restart" />
+                    <input type="button" class="button quit" value="Quit" />            
                 </div>
             </div>
       </div>
@@ -131,29 +133,7 @@
             function onLoad(){
                 app.initialize();
             }
-            /*
-            window.addEventListener('load', function(){
-                document.addEventListener("deviceready", onEvent, false);
-            }, false);
-    
-            function onEvent(){
-                var options = { frequency: 500 };
-                watchID = navigator.accelerometer.watchAcceleration(onSuccess, onError, options);
-                alert(navigator.accelerometer);
-            }
-
-            function onSuccess(acceleration) {
-                var element = document.getElementById('accelerometer');
-                element.innerHTML = 'Acceleration X: ' + acceleration.x + '<br />' +
-                                    'Acceleration Y: ' + acceleration.y + '<br />' +
-                                    'Acceleration Z: ' + acceleration.z + '<br />' + 
-                                    'Timestamp: '      + acceleration.timestamp + '<br />';
-            }
-
-            // onError: Failed to get the acceleration
-            function onError() {
-                alert('onError!');
-            }*/
+           
         </script>
     </body>
 </html>

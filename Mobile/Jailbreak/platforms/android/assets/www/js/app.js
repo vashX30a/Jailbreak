@@ -8,16 +8,39 @@ var player, score;
 var distance = {};
 var police = {};
 var pmen = [];
+var psize = 3, pdistance;
+var mediaStatus;
+
 var W = canvas.width;
 var H = canvas.height;
 var gameWidth = 225;
 var gameHeight = 850;
 var my_media = null;
 var mediaTimer = null;
+// localStorage pairings
+if (!window.localStorage.hiScore){
+  window.localStorage.hiScore = 0;
+}
+if (!window.localStorage.music){
+  window.localStorage.music = "true";
+}
+if (!window.localStorage.sfx){
+  window.localStorage.sfx = "true";
+}
+if (!window.localStorage.accel){
+  window.localStorage.accel = 5;
+}
+
+// High Score Variables
+var highScore = window.localStorage.hiScore;
+// Settings vars
+var musicSwitch = window.localStorage.music;
+var sfxSwitch = window.localStorage.sfx;
+var accelSlider = window.localStorage.accel;
 
 var watchMove = null;
 var retAcceleration = {};
-
+//window.localStorage.clear();
 
 
 /**
@@ -453,49 +476,26 @@ function updatePlayer() {
  * Update the police position and draw
  */
 function updatePolice() {
+  if(score/20 % 20 == 0 && score/20 > 30){
+    police.speed+=0.3;
+  }
   for (var i = 0; i < pmen.length; i++) {
-   // console.log('drawing...')
       pmen[i].update();
       pmen[i].draw();
-     
-    //console.log(player.x +" "+ player.width);
-    //console.log(pmen[i].x +" "+ pmen[i].width);
-    //console.log((player.y +" "+ pmen[i].y +" "+ pmen[i].height));
-
-    distance.x = player.x - pmen[i].x;
+  
+    distance.x = (player.x+player.width/2) -(pmen[i].x+police.width/2);
     distance.y = player.y - pmen[i].y;
-    console.log(distance);
-    //alert(distance.x);
-    if((distance.x > -90 && distance.x < 0) | (distance.x > 0&& distance.x < 85)){
-      console.log(distance.x);
-      if((player.x + player.width >= pmen[i].x && distance.y < 58) | (player.x <= pmen[i].x + pmen[i].width  && distance.y < 58)){
+    if((distance.x > -95 && distance.x < 0) | (distance.x > 0&& distance.x < 90)){
+      if((distance.x > -95 && distance.x < -80) && (distance.y > -70 && distance.y < 20) && (player.y > pmen[i].y)){
+        gameOver();
+      }
+      if((distance.x < 90 && distance.x > 80) && (distance.y > -70 && distance.y < 25) && (player.y > pmen[i].y)){
+        gameOver();
+      }
+      if((distance.x < 0 && distance.x > -80) | (distance.x > 0 && distance.x < 80) && (distance.y > -75 && distance.y < 65) && ((player.y + player.height - 10) > pmen[i].y - 10)){
         gameOver();
       }
     }
-
-    /*
-    if(distance < 0 && distance > -50){
-      console.log(1);
-      if((player.x + player.width >= pmen[i].x + 5)  && (player.y + 50<= pmen[i].y + pmen[i].height)){
-        //console.log(11);
-        gameOver();
-      }
-    }else if(distance > 0 && distance > 50){
-      console.log(2);
-      if((player.x <= pmen[i].x + pmen[i].width -10) && (player.y + 50 <= pmen[i].y + (pmen[i].height))){
-        //console.log(21);
-        gameOver();
-      }
-    }else{
-      console.log(3);
-      if((player.y <= pmen[i].y + pmen[i].height)){
-       // console.log(31);
-        gameOver();
-      }
-    }*/
-
-
-
   }
 
     // remove enemies that have gone off screen
@@ -504,17 +504,25 @@ function updatePolice() {
   }
 }
 
+
 function spawnPoliceSprites() {
   score++;
   var valX = rand(80,305);
   police.x = valX;
+  if(score/20 > 50 && score/20 % 20 == 0){
+    if(psize >= 5){
+      psize = 3;
+    }else{
+      psize+=1;
+    }
+  }
+  police.y = rand(-80,-500);
 
-  if (score > 10 && Math.random() < 0.96 && pmen.length < 3 && (pmen.length ? H - pmen[pmen.length-1].y >= gameHeight && pmen[pmen.length-1].y > police.height + 100: true))
+  if(score > 10 && Math.random() < 0.96 && pmen.length < psize && (pmen.length ? H - pmen[pmen.length-1].y >= score/20 && police.speed > 3.5 && pmen[pmen.length-1].y > pdistance: true)){
     pmen.push(new PoliceMen(police));
-    //console.log(pmen.length);
+  }
   
 }
-
 /*************************************************************************************/
 /**
  * Game loop
@@ -529,9 +537,10 @@ function gameLoop() {
     background.draw();
 
     //draw the score
-    ctx.font = "20pt Calibri";
+    ctx.font = "18pt Calibri";
     ctx.fillStyle = 'white';
-    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 180, 40);
+    ctx.fillText('SCORE: ' + parseInt(score/20) + ' m', canvas.width - 250, 70);
+    ctx.fillText('HIGH SCORE: ' + highScore + ' m', canvas.width - 250, 40);
 
     spawnPoliceSprites();
     updatePolice();
@@ -550,6 +559,7 @@ function startGame() {
   police.speed = 3;
   police.y = -100;
   police.sheet = new SpriteSheet('img/spritepolice.png', 112, 95);
+  pdistance = police.height;
   stop = false;
   score = 0;
 
@@ -565,8 +575,10 @@ function startGame() {
  */
 function gameOver() {
   stop = true;
-  //$('#score').html(score);
+  pauseAudio();
   $('#go-container').show();
+  storeHighScore(score);
+  //$('#score').html(score);
 }
 
   /**********************************************/
@@ -575,22 +587,26 @@ function gameOver() {
      * Show the main menu after loading all assets
      */
   function gameInit(){
+    musicSwitch = document.getElementById("music-switch").checked;
+    sfxSwitch = document.getElementById("sounds-switch").checked;
+    accelSlider = document.getElementById("sensitivity").value - 5;
     startGame();
     startAccel();
-    playMusic();
+    playMusic();  
   }
 
+  // Accelerometer functions
   function startAccel(){
     var options = { frequency: 300 };
     watchMove = navigator.accelerometer.watchAcceleration(onSuccess, onError, options); 
-    //alert(watchMove); 
   }
 
   function onSuccess(acceleration) {
      //alert('onSuccess! ' + acceleration.x);
-     retAcceleration.x = acceleration.x;
-     retAcceleration.y = acceleration.y;
-     retAcceleration.z = acceleration.z;
+     //accelSlider = document.getElementById("sensitivity").value - 5;
+     retAcceleration.x = acceleration.x + accelSlider;
+     retAcceleration.y = acceleration.y + accelSlider;
+     retAcceleration.z = acceleration.z + accelSlider;
     //alert(retAcceleration.x + " " + retAcceleration.y + " " + retAcceleration.z);
 
   }
@@ -601,15 +617,22 @@ function gameOver() {
 
 //Background music
 function playMusic(){
-  //playAudio(assetLoader.sounds.bg);
-  playAudio("http://ngamer.speedrunwiki.com/GameThemes/Street%20Fighter%20II.mp3");
+  if(musicSwitch == true){
+    playAudio("/android_asset/www/sounds/bg.mp3");
+  }
 }
 
 function playAudio(src) {
+    var loop = function(status){
+      mediaStatus = status;
+      if(status === Media.MEDIA_STOPPED){
+        my_media.play();
+      }
+    };
     // Create Media object from src
-    my_media = new Media(src, onSuccessAudio, onErrorAudio);
+    my_media = new Media(src, onSuccessAudio, onErrorAudio, loop);
     // Play audio
-    my_media.play({numberOfLoops: 100});
+    my_media.play();
     // Update my_media position every second
     if (mediaTimer == null) {
         mediaTimer = setInterval(function() {
@@ -631,21 +654,64 @@ function playAudio(src) {
     } 
 }
 
+function playAudioNoLoop(src) {
+    // Create Media object from src
+    var stat = function(status){
+      mediaStatus = status;
+    };
+    my_media = new Media(src, onSuccessAudio, onErrorAudio, stat);
+    // Play audio
+    my_media.play();
+    // Update my_media position every second
+    if (mediaTimer == null) {
+        mediaTimer = setInterval(function() {
+            // get my_media position
+            my_media.getCurrentPosition(
+                // success callback
+                function(position) {
+                    if (position > -1) {
+                        setAudioPosition((position) + " sec");
+                    }
+                },
+                // error callback
+                function(e) {
+                    console.log("Error getting pos=" + e);
+                    setAudioPosition("Error: " + e);
+                }
+            );
+        }, 1000);
+    }
+}
 // Pause audio
 function pauseAudio() {
+  if(musicSwitch == true){
     if (my_media) {
-        my_media.pause();
+      if(mediaStatus === Media.MEDIA_RUNNING){
+          my_media.pause();
+        }
     }
+  }
 }
 
 // Stop audio
 
 function stopAudio() {
+  if(musicSwitch == true){
     if (my_media) {
-        my_media.stop();
+        if(mediaStatus === Media.MEDIA_RUNNING){
+          my_media.stop();
+        }
     }
     clearInterval(mediaTimer);
     mediaTimer = null;
+  }
+}
+
+function releaseAudio(){
+  if(my_media != null) { 
+    my_media.release(); 
+    my_media = null; 
+  }
 }
 
 function onSuccessAudio() {
@@ -657,10 +723,59 @@ function onErrorAudio() {
   alert('audio error!');
 }
 
+// Storing High Score
+function storeHighScore(newScore){
+  var score = parseInt(newScore/20);
+  if(highScore < score){
+    $('#highscore').show();
+    highScore = score;
+    window.localStorage.hiScore = highScore;
+    if(sfxSwitch == true){
+      playAudioNoLoop("/android_asset/www/sounds/NewHighScore.mp3");
+    }
+  }
+  else{
+    if(sfxSwitch == true){
+      playAudioNoLoop("/android_asset/www/sounds/gameOver.mp3");
+    }
+  }
+}
+
+// Getting settings values
+function initOptions(){
+  document.getElementById("music-switch").checked = musicSwitch == "true";
+  document.getElementById("sounds-switch").checked = sfxSwitch == "true";
+  document.getElementById("sensitivity").value = accelSlider;
+}
+
+function saveSettings(){
+  musicSwitch = document.getElementById("music-switch").checked;
+  sfxSwitch = document.getElementById("sounds-switch").checked;
+  accelSlider = document.getElementById("sensitivity").value;
+  window.localStorage.music = musicSwitch;
+  window.localStorage.sfx = sfxSwitch;
+  window.localStorage.accel = accelSlider;
+}
+
+function quitApp(){
+  navigator.app.exitApp();
+}
+
+function pauseOnSuspend(){
+  pauseAudio();
+  stop = true;
+  if($('#menu').is(':hidden')){
+    $('#container').show();
+  }
+}
+
   function mainMenu() {
+    initOptions();
+    document.addEventListener("pause", pauseOnSuspend, false);
     $('#progress').hide();
     $('#main').show();
     $('#menu').addClass('main');
+    $('#highscore').hide();
   }
 
   /**
@@ -673,9 +788,14 @@ function onErrorAudio() {
     gameInit();
   });
 
+  $('.exit').click(function() {
+    releaseAudio();
+    quitApp();  
+  });
+  
 
   $('#pause').click(function() {
-    //pauseAudio();
+    pauseAudio();
     var $this = $(this);
     stop = true;
 
@@ -685,15 +805,17 @@ function onErrorAudio() {
   });
 
   $('.resume').click(function() {
-    //playMusic();
+    playMusic();
     stop = false;
     gameLoop();
     $('#container').hide();
   });
 
   $('.quit').click(function() {
-    //stopAudio();
+    stopAudio();
     $('#container').hide();
+    $('#go-container').hide();
+    $('#highscore').hide();
     $('#pause').hide();
     stop = false;
     $('#canvas').hide();
@@ -701,12 +823,13 @@ function onErrorAudio() {
   });
 
   $('.restart').click(function() {
+    stopAudio();
     $('#go-container').hide();
+    $('#highscore').hide();
     gameInit();
   });
 
   $('.option').click(function() {
-    //startAccel();
     $('#main').hide();
     $('#options-container').show('slow');
     $('#menu').addClass('options stretchRight');
@@ -719,6 +842,7 @@ function onErrorAudio() {
   });
 
   $('.back').click(function() {
+    saveSettings();
     $('#options-container, #help-container').hide();
     $('#main').show();
     $('#menu').removeClass('options help stretchRight');
